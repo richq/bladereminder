@@ -1,0 +1,8 @@
+
+# version 1.0 (unreleased)
+
+* Daily entry for new blade or one-more-use
+* Can edit entries
+* Dark or light theme
+* Export to CSV file
+* Basic help page

@@ -1,0 +1,55 @@
+[Blade Reminder app on the Play store](https://play.google.com/store/apps/details?id=es.quirk.bladereminder)
+
+# Compiling
+
+Use gradle from Android Studio e.g. `android-studio/gradle/gradle-2.2.1/bin/gradle`
+
+# Updating translations
+
+Translations use [android2po](https://pypi.python.org/pypi/android2po/1.2.0).
+
+First pull in the new strings from the default XML to the po files:
+
+    a2po export --android bladeReminder/src/main/res/ --gettext locale
+
+Then modify the po files with the translations. Afterwards, push the changes into the XML files:
+
+    a2po import --android bladeReminder/src/main/res/ --gettext locale
+
+This will update res/values-es/strings.xml etc with the translated strings.
+
+# Dependencies
+
+As well as the declared dependencies in build.gradle, the following are copied in the source tree:
+
+* [Snackbar](https://github.com/wmora/snackbar)
+* [Material Dialogs](https://github.com/afollestad/material-dialogs)
+* [Preference Fragment](https://github.com/kolavar/android-support-v4-preferencefragment)
+
+Hacked out some broken stuff though.
+
+## Build failure in packageRelease
+
+If you see this:
+
+    Some problems were found with the configuration of task ':bladeReminder:packageRelease'.
+    > No value has been specified for property 'signingConfig.storePassword'.
+    > No value has been specified for property 'signingConfig.keyPassword'.
+    > No value has been specified for property 'signingConfig.keyAlias'.
+
+Then add a gradle.properties file to declare the signing key - you can use the
+debug key in ~/.android as a temporary workaround, but really you should create a proper key.
+An example gradle.properties for the debug key would be this:
+
+    RELEASE_STORE_FILE = /home/username/.android/debug.keystore
+    RELEASE_STORE_PASSWORD = android
+    RELEASE_KEY_ALIAS = androiddebugkey
+    RELEASE_KEY_PASSWORD = android
+
+Place this in the root of the project source code (i.e. same level as settings.gradle)
+
+## Image manipulation
+
+Convert from the dark to light image (only have to modify one this way):
+
+    convert round_red_dark.9.png -fill '#e57373' -opaque '#f44336' -fill '#ef5350' -opaque '#e53935' round_red.9.png

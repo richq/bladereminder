@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/insert_note"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:layout_gravity="center" android:orientation="vertical"  >
+
+    <ScrollView android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false">
+        <TextView android:id="@+id/message"
+            style="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_comment_dlg_message"
+            android:paddingLeft="16dip"
+            android:paddingRight="16dip"
+            android:paddingTop="8dip"
+            android:paddingBottom="8dip"/>
+    </ScrollView>
+
+        <CheckBox
+            android:id="@+id/do_not_show_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/dont_show_this_anymore" />
+
+    <EditText
+        android:id="@+id/txt_your_note"
+        android:layout_width="match_parent"  android:layout_height="wrap_content"
+        android:inputType="textCapSentences"
+        android:imeOptions="actionDone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/buttonBarStyle"
+        android:orientation="horizontal"  >
+
+        <Button
+            android:id="@+id/enter_note_ok"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:text="@string/add_comment_dlg_ok" />
+
+    </LinearLayout>
+
+</LinearLayout>

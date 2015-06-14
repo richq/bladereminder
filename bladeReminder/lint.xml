@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <issue id="RtlHardcoded" severity="ignore" />
+
+    <!-- Ignore unused resources in the colors file -->
+    <issue id="UnusedResources">
+        <ignore path="src/main/res/values/colors.xml" />
+    </issue>
+</lint>

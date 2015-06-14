@@ -1,0 +1,50 @@
+# Spanish translations for PROJECT.
+# Copyright (C) 2014 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2015-06-09 20:32+0200\n"
+"PO-Revision-Date: 2014-10-13 10:59+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=((n == 1) ? 0 : 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.0dev\n"
+
+msgctxt "help_first"
+msgid "First thing to do is to select the date when you last put a new blade in."
+msgstr "Primero elige el día cuando cambiaste la hoja la ultima vez."
+
+msgctxt "help_second_1"
+msgid ""
+"Mark each day you've used the blade to shave by choosing the day and "
+"tapping the razor icon on the menu."
+msgstr ""
+"Cada día que uses la hoja, márcalo en la lista y toca el iconito de la "
+"maquinilla de afeitar en el menú."
+
+msgctxt "help_modify"
+msgid ""
+"You can modify the comment for a day or change the recorded blade uses by"
+" tapping a shave-day and pressing the edit icon."
+msgstr ""
+"Puedes modificar el comentario o usos de la hoja guardado para un día "
+"tocando el día y luego el iconito de editar."
+
+msgctxt "help_third"
+msgid "When you start a new blade, choose the day and tap the blade menu item."
+msgstr ""
+"Cuando comiences con una nueva hoja, elige el día y toca la hoja en el "
+"menú"
+
+msgctxt "got_it"
+msgid "Got it!"
+msgstr "¡Vale!"
+

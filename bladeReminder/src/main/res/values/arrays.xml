@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Used in theme selection -->
+    <string-array translatable="false" name="entries_theme_preference">
+        <item>@string/light</item>
+        <item>@string/dark</item>
+    </string-array>
+
+    <!-- Used in app/menu examples -->
+    <string-array translatable="false" name="entry_values_theme_preference">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+</resources>

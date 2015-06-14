@@ -1,0 +1,249 @@
+# Spanish translations for PROJECT.
+# Copyright (C) 2014 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2015-06-09 20:32+0200\n"
+"PO-Revision-Date: 2014-10-13 10:53+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=((n == 1) ? 0 : 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.0dev\n"
+
+msgctxt "about"
+msgid "About"
+msgstr "Acerca de"
+
+msgctxt "open_source_licences"
+msgid "Open-source licences"
+msgstr "Licencias de código abierto"
+
+msgctxt "open_source_licences_details"
+msgid "Licence details for open-source software"
+msgstr "Detalles de las licencias del software código abierto"
+
+msgctxt "action_help"
+msgid "Help"
+msgstr "Ayuda"
+
+msgctxt "action_settings"
+msgid "Settings"
+msgstr "Ajustes"
+
+msgctxt "action_share"
+msgid "File Upload"
+msgstr "Exportar Fichero"
+
+msgctxt "add_comment_dlg_message"
+msgid ""
+"Write a short note for yourself so you don't forget the details of the "
+"shave"
+msgstr "Escribe una nota para que no se te olviden los detalles del afeitado"
+
+msgctxt "add_comment_dlg_ok"
+msgid "OK, save it!"
+msgstr "Vale, ¡a guardar!"
+
+msgctxt "add_comment_dlg_title"
+msgid "Add a note"
+msgstr "Añade una nota"
+
+msgctxt "app_name"
+msgid "Blade Reminder"
+msgstr "Recordatorio del Afeitado"
+
+msgctxt "arrow"
+msgid "An arrow pointing to the list view to tap"
+msgstr "Una flecha apuntando a la lista que debes tocar"
+
+msgctxt "backup"
+msgid "Backup"
+msgstr "Copia de seguridad"
+
+msgctxt "colours_enabled"
+msgid "Colours Enabled"
+msgstr "Colores activados"
+
+msgctxt "colours_enabled_summary"
+msgid ""
+"Show a purple, white, blue, green, yellow, orange or red background as "
+"the blade loses sharpness"
+msgstr ""
+"Mostrar un fondo en lila, blanco, azul, verde, amarillo, naranja o rojo "
+"según la afilada que esté la hoja"
+
+msgctxt "commentText"
+msgid "Comment goes here"
+msgstr "Aquí va el comentario"
+
+msgctxt "countLabel"
+msgid "Uses"
+msgstr "Usos"
+
+msgctxt "dark"
+msgid "Dark"
+msgstr "Oscuro"
+
+msgctxt "dateLabelString"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "dateLabel"
+msgid "When"
+msgstr "Cuando"
+
+msgctxt "delete_title"
+msgid "Remove this day's details"
+msgstr "Borrar los detalles de este día"
+
+msgctxt "deleted"
+msgid "Deleted"
+msgstr "Borrado"
+
+msgctxt "display_settings"
+msgid "Display Settings"
+msgstr "Ajustes de mostración"
+
+msgctxt "dont_show_this_anymore"
+msgid "Don't show this dialog again"
+msgstr "No quiero ver esta ventana más"
+
+msgctxt "editentry"
+msgid "Edit shave details"
+msgstr "Editar los detalles del afeitado"
+
+msgctxt "format_date"
+msgid "Format Date"
+msgstr "Formato de la fecha"
+
+msgctxt "start_import"
+msgid "Start importing"
+msgstr "Importar"
+
+msgctxt "cancel_import"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "import_activity_name"
+msgid "Import External Data"
+msgstr "Importar datos externos"
+
+msgctxt "import_text_help"
+msgid ""
+"You can import data from a file containing comma separated values. These "
+"should be the date, the shave count and any comments. I'll try to do my "
+"best to resolve conflicts."
+msgstr ""
+"Puedes importar datos desde un fichero con valores separados por comas. "
+"Los valores son la fecha, la cuenta de afeitados y un comentario. "
+"Resuelvo los conflictos lo mejor que pueda."
+
+msgctxt "light"
+msgid "Light"
+msgstr "Clarito"
+
+msgctxt "modify_done"
+msgid "All done"
+msgstr "Ya está"
+
+msgctxt "modify_name"
+msgid "Edit Shave Details"
+msgstr "Editar los detalles del afeitado"
+
+msgctxt "newblade"
+msgid "New blade"
+msgstr "Hoja nueva"
+
+msgctxt "notesLabel"
+msgid "Notes"
+msgstr "Comentarios"
+
+msgctxt "nothing_to_share"
+msgid "No entries to share"
+msgstr "No hay entradas para compartir"
+
+msgctxt "nothing_to_share_to"
+msgid "Nothing to share to"
+msgstr "No hay apps configuradas para compartir"
+
+msgctxt "onemore"
+msgid "One more use"
+msgstr "Un uso más"
+
+msgctxt "shave_file_bakcup"
+msgid "Shave file backup"
+msgstr "Copia de seguridad del fichero de afeitados"
+
+msgctxt "shaves_csv"
+msgid "spreadsheets/shaves.csv"
+msgstr "spreadsheets/afeitados.csv"
+
+msgctxt "show_comment_dialog"
+msgid "Show Comment Dialog"
+msgstr "Muestra el dialogo de comentarios"
+
+msgctxt "sounds_enabled"
+msgid "Sounds Enabled"
+msgstr "Sonidos activados"
+
+msgctxt "sounds_enabled_summary"
+msgid "Play an annoying sound when you perform certain actions"
+msgstr "Reproducir un sonido algo irritante al cumplir ciertos actos"
+
+msgctxt "theme"
+msgid "Theme"
+msgstr "Tema"
+
+msgctxt "theme_summary"
+msgid "Change the overall theme"
+msgstr "Cambiar la tema de la app"
+
+msgctxt "title_activity_help"
+msgid "Getting Started"
+msgstr "Como Empezar"
+
+msgctxt "title_settings"
+msgid "Settings"
+msgstr "Ajustes"
+
+msgctxt "today"
+msgid "Today"
+msgstr "Hoy"
+
+msgctxt "bladeicon"
+msgid "Blade Icon"
+msgstr "Icono de una hoja"
+
+msgctxt "unable_to_create_file"
+msgid "Unable to create new file"
+msgstr "No ha sido posible crear un fichero nuevo"
+
+msgctxt "undo"
+msgid "Undo"
+msgstr "Deshacer"
+
+#, c-format
+msgctxt "with_template"
+msgid "With the template %s"
+msgstr "Con la plantilla %s"
+
+msgctxt "yesterday"
+msgid "Yesterday"
+msgstr "Ayer"
+
+msgctxt "sharpness_range"
+msgid "Sharpness Range"
+msgstr "Rango de afilado"
+
+msgctxt "sharpness_range_summary"
+msgid "Configure the range of values for sharpness colours"
+msgstr "Cambia el rango de valores para los colores de afilado"
+

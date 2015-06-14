@@ -1,0 +1,243 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2015-06-09 20:32+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.0dev\n"
+
+msgctxt "about"
+msgid "About"
+msgstr ""
+
+msgctxt "open_source_licences"
+msgid "Open-source licences"
+msgstr ""
+
+msgctxt "open_source_licences_details"
+msgid "Licence details for open-source software"
+msgstr ""
+
+msgctxt "action_help"
+msgid "Help"
+msgstr ""
+
+msgctxt "action_settings"
+msgid "Settings"
+msgstr ""
+
+msgctxt "action_share"
+msgid "File Upload"
+msgstr ""
+
+msgctxt "add_comment_dlg_message"
+msgid ""
+"Write a short note for yourself so you don't forget the details of the "
+"shave"
+msgstr ""
+
+msgctxt "add_comment_dlg_ok"
+msgid "OK, save it!"
+msgstr ""
+
+msgctxt "add_comment_dlg_title"
+msgid "Add a note"
+msgstr ""
+
+msgctxt "app_name"
+msgid "Blade Reminder"
+msgstr ""
+
+msgctxt "arrow"
+msgid "An arrow pointing to the list view to tap"
+msgstr ""
+
+msgctxt "backup"
+msgid "Backup"
+msgstr ""
+
+msgctxt "colours_enabled"
+msgid "Colours Enabled"
+msgstr ""
+
+msgctxt "colours_enabled_summary"
+msgid ""
+"Show a purple, white, blue, green, yellow, orange or red background as "
+"the blade loses sharpness"
+msgstr ""
+
+msgctxt "commentText"
+msgid "Comment goes here"
+msgstr ""
+
+msgctxt "countLabel"
+msgid "Uses"
+msgstr ""
+
+msgctxt "dark"
+msgid "Dark"
+msgstr ""
+
+msgctxt "dateLabelString"
+msgid "Date"
+msgstr ""
+
+msgctxt "dateLabel"
+msgid "When"
+msgstr ""
+
+msgctxt "delete_title"
+msgid "Remove this day's details"
+msgstr ""
+
+msgctxt "deleted"
+msgid "Deleted"
+msgstr ""
+
+msgctxt "display_settings"
+msgid "Display Settings"
+msgstr ""
+
+msgctxt "dont_show_this_anymore"
+msgid "Don't show this dialog again"
+msgstr ""
+
+msgctxt "editentry"
+msgid "Edit shave details"
+msgstr ""
+
+msgctxt "format_date"
+msgid "Format Date"
+msgstr ""
+
+msgctxt "start_import"
+msgid "Start importing"
+msgstr ""
+
+msgctxt "cancel_import"
+msgid "Cancel"
+msgstr ""
+
+msgctxt "import_activity_name"
+msgid "Import External Data"
+msgstr ""
+
+msgctxt "import_text_help"
+msgid ""
+"You can import data from a file containing comma separated values. These "
+"should be the date, the shave count and any comments. I'll try to do my "
+"best to resolve conflicts."
+msgstr ""
+
+msgctxt "light"
+msgid "Light"
+msgstr ""
+
+msgctxt "modify_done"
+msgid "All done"
+msgstr ""
+
+msgctxt "modify_name"
+msgid "Edit Shave Details"
+msgstr ""
+
+msgctxt "newblade"
+msgid "New blade"
+msgstr ""
+
+msgctxt "notesLabel"
+msgid "Notes"
+msgstr ""
+
+msgctxt "nothing_to_share"
+msgid "No entries to share"
+msgstr ""
+
+msgctxt "nothing_to_share_to"
+msgid "Nothing to share to"
+msgstr ""
+
+msgctxt "onemore"
+msgid "One more use"
+msgstr ""
+
+msgctxt "shave_file_bakcup"
+msgid "Shave file backup"
+msgstr ""
+
+msgctxt "shaves_csv"
+msgid "spreadsheets/shaves.csv"
+msgstr ""
+
+msgctxt "show_comment_dialog"
+msgid "Show Comment Dialog"
+msgstr ""
+
+msgctxt "sounds_enabled"
+msgid "Sounds Enabled"
+msgstr ""
+
+msgctxt "sounds_enabled_summary"
+msgid "Play an annoying sound when you perform certain actions"
+msgstr ""
+
+msgctxt "theme"
+msgid "Theme"
+msgstr ""
+
+msgctxt "theme_summary"
+msgid "Change the overall theme"
+msgstr ""
+
+msgctxt "title_activity_help"
+msgid "Getting Started"
+msgstr ""
+
+msgctxt "title_settings"
+msgid "Settings"
+msgstr ""
+
+msgctxt "today"
+msgid "Today"
+msgstr ""
+
+msgctxt "bladeicon"
+msgid "Blade Icon"
+msgstr ""
+
+msgctxt "unable_to_create_file"
+msgid "Unable to create new file"
+msgstr ""
+
+msgctxt "undo"
+msgid "Undo"
+msgstr ""
+
+#, c-format
+msgctxt "with_template"
+msgid "With the template %s"
+msgstr ""
+
+msgctxt "yesterday"
+msgid "Yesterday"
+msgstr ""
+
+msgctxt "sharpness_range"
+msgid "Sharpness Range"
+msgstr ""
+
+msgctxt "sharpness_range_summary"
+msgid "Configure the range of values for sharpness colours"
+msgstr ""
+

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="open_source_licences">Open-source licenses</string>
+  <string name="open_source_licences_details">License details for open-source software</string>
+  <string name="colours_enabled">Colors Enabled</string>
+  <string name="sharpness_range_summary">Configure the range of values for sharpness colors, currently from %1$s to %2$s</string>
+</resources>

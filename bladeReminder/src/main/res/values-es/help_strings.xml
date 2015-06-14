@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="help_first">Primero elige el día cuando cambiaste la hoja la ultima vez.</string>
+  <string name="help_second_1">Cada día que uses la hoja, márcalo en la lista y toca el iconito de la maquinilla de afeitar en el menú.</string>
+  <string name="help_modify">Puedes modificar el comentario o usos de la hoja guardado para un día tocando el día y luego el iconito de editar.</string>
+  <string name="help_third">Cuando comiences con una nueva hoja, elige el día y toca la hoja en el menú</string>
+  <string name="got_it">¡Vale!</string>
+</resources>

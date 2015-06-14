@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="help_first">First thing to do is to select the date when you last put a new blade in.</string>
+    <string name="help_second_1">Mark each day you\'ve used the blade to shave by choosing the day and tapping the razor icon on the menu.</string>
+    <string name="help_modify">You can modify the comment for a day or change the recorded blade uses by tapping a shave-day and pressing the edit icon.</string>
+    <string name="help_third">When you start a new blade, choose the day and tap the blade menu item.</string>
+    <string name="got_it">Got it!</string>
+</resources>

@@ -1,0 +1,24 @@
+- the original plan: date, description, usage count
+- the excel sheet already sort-of does this easily
+  (in fact... ¿a generic diary app?)
+  I just need 1 button! "Add new row"
+   + DATE DAY count notes
+  Even... could add dates up to today automatically and default to "not shaved"
+  on days in between last day + today
+  have a popup - incr, new blade, reset
+   - would bubble changes through (this is the important bit!)
+
+First run:
+   - help, describe how to use the damn thing
+
+DB design - KISS:
+
+date, count, comment
+
+(date should be string remember)
+
+
+storage/backup:
+https://www.zoho.com/docs/zoho-docs-api.html
+google drive - api?
+owncloud - http://doc.owncloud.org/server/6.0/developer_manual/android_library/examples.html

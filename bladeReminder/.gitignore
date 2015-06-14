@@ -1,0 +1,6 @@
+src/main/res/raw/*.ogg
+unused.txt
+manifest-merger-release-report.txt
+src/main/res/values/acra.xml
+acra.config
+src/main/res/drawable/round*9.png

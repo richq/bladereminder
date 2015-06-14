@@ -1,0 +1,102 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        applicationId "es.quirk.bladereminder"
+        minSdkVersion 16
+        targetSdkVersion 22
+//      testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release {
+            try {
+                storeFile file(RELEASE_STORE_FILE)
+                storePassword RELEASE_STORE_PASSWORD
+                keyAlias RELEASE_KEY_ALIAS
+                keyPassword RELEASE_KEY_PASSWORD
+            } catch (Exception ex) {
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
+            signingConfig signingConfigs.release
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds true
+        abortOnError false
+    }
+}
+
+
+task myPrebuildTask << {
+    FileTree tree = fileTree(dir: "${projectDir}/../original-media/")
+    tree.include '*.wav'
+    tree.each { File file ->
+        def output = exec {
+            def outputname = file.name.split("\\.")[0]
+            File outputfile = new File("${projectDir}/src/main/res/raw/" + outputname + ".ogg")
+            if (!outputfile.exists() || outputfile.lastModified() < file.lastModified()) {
+                def str = "avconv -i ${file} -y -acodec libvorbis -aq 20 -vn -ac 2 ${outputfile}"
+                commandLine str.split(' ')
+            } else {
+                commandLine 'true'
+            }
+        }
+    }
+    exec {
+        // red_300 main, red_400 outline
+        def str = ("convert ${projectDir}/../original-media/round_red_template.9.png " +
+            "-fill #e57373 -opaque white -fill #e57373 -opaque blue " +
+            "${projectDir}/src/main/res/drawable/round_red.9.png");
+        commandLine str.split(' ');
+    }
+    exec {
+        // red_500 main, red_600 outline
+        def str = ("convert ${projectDir}/../original-media/round_red_template.9.png " +
+            "-fill #F44336 -opaque white -fill #F44336 -opaque blue " +
+            "${projectDir}/src/main/res/drawable/round_red_dark.9.png");
+        commandLine str.split(' ');
+    }
+
+    exec {
+        // orange_300 main, orange_400 outline
+        def str = ("convert ${projectDir}/../original-media/round_orange_template.9.png " +
+            "-fill #FFB74D -opaque white -fill #FFB74D -opaque blue " +
+            "${projectDir}/src/main/res/drawable/round_orange.9.png");
+        commandLine str.split(' ');
+    }
+    exec {
+        // orange_600 main, orange_700 outline
+        def str = ("convert ${projectDir}/../original-media/round_orange_template.9.png " +
+            "-fill #FB8C00 -opaque white -fill #FB8C00 -opaque blue " +
+            "${projectDir}/src/main/res/drawable/round_orange_dark.9.png");
+        commandLine str.split(' ');
+    }
+}
+
+preBuild.dependsOn myPrebuildTask
+
+dependencies {
+    compile 'com.yahoo.mobile.client.android.util.rangeseekbar:rangeseekbar-library:0.1.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:design:22.2.0'
+    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.github.clans:fab:1.4.0'
+    compile 'com.google.guava:guava:18.0'
+    compile 'com.jakewharton:butterknife:6.0.0'
+    compile 'com.jakewharton.timber:timber:2.5.0'
+    compile 'net.sf.opencsv:opencsv:2.3'
+    compile project(':androidsupportv4preferencefragmentmaster')
+    // Testing-only dependencies
+//    androidTestCompile 'com.android.support.test:runner:0.2'
+//    androidTestCompile 'com.android.support.test:rules:0.2'
+//    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.1'
+}

@@ -1,0 +1,59 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="display_settings"
+        android:title="@string/display_settings" >
+
+        <EditTextPreference
+            android:key="date_format"
+            android:defaultValue="yyyy-MM-dd"
+            android:title="@string/format_date"
+            android:dialogTitle="@string/format_date" />
+
+        <CheckBoxPreference
+            android:key="colours_enabled"
+            android:defaultValue="true"
+            android:title="@string/colours_enabled"
+            android:summary="@string/colours_enabled_summary"
+            />
+
+         <es.quirk.bladereminder.widgets.RangePreference
+             android:key="range"
+             android:title="@string/sharpness_range"
+             android:dependency="colours_enabled"
+             />
+
+        <CheckBoxPreference
+            android:key="sounds_enabled"
+            android:defaultValue="false"
+            android:title="@string/sounds_enabled"
+            android:summary="@string/sounds_enabled_summary"
+            />
+
+        <CheckBoxPreference
+            android:key="show_comment_dialog"
+            android:defaultValue="true"
+            android:title="@string/show_comment_dialog"
+             />
+
+         <ListPreference
+             android:key="default_theme"
+             android:title="@string/theme"
+             android:summary="@string/theme_summary"
+             android:entries="@array/entries_theme_preference"
+             android:entryValues="@array/entry_values_theme_preference"
+             android:defaultValue="0"
+             android:dialogTitle="@string/theme_summary" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="about_box"
+        android:title="@string/about" >
+        <Preference android:title="@string/open_source_licences"
+            android:key="about_button"
+            android:summary="@string/open_source_licences_details"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

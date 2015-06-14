@@ -1,0 +1,121 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <TextView
+        android:id="@+id/splashText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:paddingTop="10dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="10dp" />
+
+    <TextView
+        android:id="@+id/valueText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="32sp"
+        android:gravity="center_horizontal" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:paddingTop="10dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="10dp"
+        android:layout_gravity="center_horizontal">
+
+        <es.quirk.bladereminder.widgets.UsesView
+            android:layout_height="match_parent"
+            android:layout_width="35dp"
+            android:id="@+id/use1"
+            android:layout_gravity="left"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="1"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            tools:ignore="HardcodedText" />
+        <es.quirk.bladereminder.widgets.UsesView
+            android:layout_height="match_parent"
+            android:layout_width="35dp"
+            android:id="@+id/use2"
+            android:layout_gravity="left"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="2"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            tools:ignore="HardcodedText" />
+        <es.quirk.bladereminder.widgets.UsesView
+            android:layout_height="match_parent"
+            android:layout_width="35dp"
+            android:id="@+id/use3"
+            android:layout_gravity="left"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="3"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            tools:ignore="HardcodedText" />
+        <es.quirk.bladereminder.widgets.UsesView
+            android:layout_height="match_parent"
+            android:layout_width="35dp"
+            android:id="@+id/use4"
+            android:layout_gravity="left"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="4"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            tools:ignore="HardcodedText" />
+        <es.quirk.bladereminder.widgets.UsesView
+            android:layout_height="match_parent"
+            android:layout_width="35dp"
+            android:id="@+id/use5"
+            android:layout_gravity="left"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="5"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            tools:ignore="HardcodedText" />
+        <es.quirk.bladereminder.widgets.UsesView
+            android:layout_height="match_parent"
+            android:layout_width="35dp"
+            android:id="@+id/use6"
+            android:layout_gravity="left"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="6"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            tools:ignore="HardcodedText" />
+        <es.quirk.bladereminder.widgets.UsesView
+            android:layout_height="match_parent"
+            android:layout_width="40dp"
+            android:id="@+id/use7"
+            android:layout_gravity="left"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="7"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+        <com.yahoo.mobile.client.android.util.rangeseekbar.RangeSeekBar
+            android:id="@+id/rangeSeekBar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+
+</LinearLayout>

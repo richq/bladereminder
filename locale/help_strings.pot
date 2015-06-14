@@ -1,0 +1,43 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2015-06-09 20:32+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.0dev\n"
+
+msgctxt "help_first"
+msgid "First thing to do is to select the date when you last put a new blade in."
+msgstr ""
+
+msgctxt "help_second_1"
+msgid ""
+"Mark each day you've used the blade to shave by choosing the day and "
+"tapping the razor icon on the menu."
+msgstr ""
+
+msgctxt "help_modify"
+msgid ""
+"You can modify the comment for a day or change the recorded blade uses by"
+" tapping a shave-day and pressing the edit icon."
+msgstr ""
+
+msgctxt "help_third"
+msgid "When you start a new blade, choose the day and tap the blade menu item."
+msgstr ""
+
+msgctxt "got_it"
+msgid "Got it!"
+msgstr ""
+
