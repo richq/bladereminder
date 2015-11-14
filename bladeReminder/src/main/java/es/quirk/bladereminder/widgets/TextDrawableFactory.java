@@ -2,6 +2,7 @@ package es.quirk.bladereminder.widgets;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 
 public final class TextDrawableFactory {
 
@@ -12,7 +13,29 @@ public final class TextDrawableFactory {
 
 	private TextDrawableFactory() { }
 
-	public static TextDrawable createIcon(Context context, String txt) {
+	private static String getIconUtfChars(@NonNull String icon) {
+		int res = 0;
+		switch (icon) {
+			case "gmd-delete":
+				res = 0xe620;
+				break;
+			case "gmd-help":
+				res = 0xe633;
+				break;
+			case "gmd-file-upload":
+				res = 0xe7b2;
+				break;
+			case "gmd-edit":
+				res = 0xe809;
+				break;
+			default:
+				break;
+		}
+		return String.valueOf(Character.toChars(res));
+	}
+
+	@NonNull
+	public static TextDrawable createIcon(@NonNull Context context, @NonNull String txt) {
 		if (sRazorFont == null) {
 			sRazorFont = Typeface.createFromAsset(context.getResources().getAssets(),
 				"blade-font.ttf");
@@ -27,10 +50,8 @@ public final class TextDrawableFactory {
 			drawable.setText(txt);
 		} else {
 			drawable.setTypeface(sGoogleMaterial);
-			drawable.setText(Droidicon.getIconUtfChars(txt));
+			drawable.setText(getIconUtfChars(txt));
 		}
-		/*boolean isLightTheme = ((BaseActivity)mShaveFragment.getActivity()).mThemeSetting.equals("0");
-		drawable.setTextColor(isLightTheme ? Utils.DARK_TEXT : Utils.LIGHT_TEXT);*/
 		drawable.setTextSize(30);
 		return drawable;
 	}

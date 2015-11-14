@@ -9,6 +9,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.util.Arrays;
@@ -50,7 +52,7 @@ public class ShaveEntryContentProvider extends ContentProvider {
 	}
 
 	@Override
-	public Cursor query(Uri uri, String[] projection, String selection,
+	public Cursor query(@NonNull Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
 
 		Timber.d("query called %s %s %s %s",
@@ -85,7 +87,7 @@ public class ShaveEntryContentProvider extends ContentProvider {
 		return cursor;
 	}
 
-	private void checkColumns(String[] projection) {
+	private void checkColumns(@Nullable String[] projection) {
 		if (projection != null) {
 			HashSet<String> requestedColumns = new HashSet<>(Arrays.asList(projection));
 			HashSet<String> availableColumns = new HashSet<>(Arrays.asList(AVAILABLE));
@@ -97,7 +99,7 @@ public class ShaveEntryContentProvider extends ContentProvider {
 	}
 
 	@Override
-	public int delete(Uri uri, String selection, String[] selectionArgs) {
+	public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
 		int uriType = URI_MATCHER.match(uri);
 		String theSelection;
 		String [] theArgs = null;
@@ -122,14 +124,16 @@ public class ShaveEntryContentProvider extends ContentProvider {
 		return rowsDeleted;
 	}
 
+	@Nullable
 	@Override
 	public String getType(Uri uri) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@NonNull
 	@Override
-	public Uri insert(Uri uri, ContentValues values) {
+	public Uri insert(@NonNull Uri uri, ContentValues values) {
 		// TODO Auto-generated method stub
 		int uriType = URI_MATCHER.match(uri);
 		SQLiteDatabase sqlDB = mDatabase.getWritableDatabase();
@@ -144,7 +148,7 @@ public class ShaveEntryContentProvider extends ContentProvider {
 	}
 
 	@Override
-	public int update(Uri uri, ContentValues values, String selection,
+	public int update(@NonNull Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
 		int uriType = URI_MATCHER.match(uri);
 		String theSelection;

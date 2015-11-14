@@ -1,16 +1,18 @@
 package es.quirk.bladereminder;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import es.quirk.bladereminder.fragments.ShaveFragment;
 import es.quirk.bladereminder.widgets.TextDrawable;
 import es.quirk.bladereminder.widgets.TextDrawableFactory;
 import timber.log.Timber;
 
-final class NewShaveMenu implements ActionMode.Callback {
+public final class NewShaveMenu implements ActionMode.Callback {
 	private final ShaveFragment mShaveFragment;
 
 	public NewShaveMenu(ShaveFragment shaveFragment) {
@@ -18,7 +20,7 @@ final class NewShaveMenu implements ActionMode.Callback {
 	}
 
 	@Override
-	public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+	public boolean onActionItemClicked(@NonNull ActionMode mode, @NonNull MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_item_one_more:
 				mShaveFragment.doOneMore();
@@ -35,7 +37,7 @@ final class NewShaveMenu implements ActionMode.Callback {
 	}
 
 	@Override
-	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+	public boolean onCreateActionMode(@NonNull ActionMode mode, @NonNull Menu menu) {
 		Timber.d("onCreateActionMode called! This is gonna break stuff..");
 		MenuInflater inflater = mode.getMenuInflater();
 		inflater.inflate(R.menu.contextual, menu);

@@ -2,6 +2,7 @@
 <resources>
 
     <string translatable="false" name="_99">99</string>
+    <string translatable="false" name="_date">2015-01-01</string>
     <string name="about">About</string>
     <string name="open_source_licences">Open-source licences</string>
     <string name="open_source_licences_details">Licence details for open-source software</string>
@@ -17,6 +18,8 @@
     <string name="colours_enabled">Colours Enabled</string>
     <string name="colours_enabled_summary">Show a purple, white, blue, green, yellow, orange or red background as the blade loses sharpness</string>
     <string name="commentText">Comment goes here</string>
+    <string name="changelog">Changelog</string>
+    <string name="changelog_summary">Details of recent changes</string>
     <string translatable="false" name="countLabelText">99</string>
     <string name="countLabel">Uses</string>
     <string name="dark">Dark</string>
@@ -40,7 +43,7 @@
     <string name="nothing_to_share">No entries to share</string>
     <string name="nothing_to_share_to">Nothing to share to</string>
     <string name="onemore">One more use</string>
-    <string name="shave_file_bakcup">Shave file backup</string>
+    <string name="shave_file_backup">Shave file backup</string>
     <string name="shaves_csv">spreadsheets/shaves.csv</string>
     <string name="show_comment_dialog">Show Comment Dialog</string>
     <string name="sounds_enabled">Sounds Enabled</string>
@@ -57,5 +60,14 @@
     <string name="yesterday">Yesterday</string>
     <string name="sharpness_range">Sharpness Range</string>
     <string name="sharpness_range_summary">Configure the range of values for sharpness colours, currently from %1$s to %2$s</string>
+
+    <string name="action_stats">Stats</string>
+    <string name="average_uses">Average Uses</string>
+    <string name="max_uses">Highest Uses</string>
+    <string name="stats_since">Statistics since</string>
+    <string name="never">Never!</string>
+
+    <string name="not_enough_entries">Not enough entries yet</string>
+
 
 </resources>

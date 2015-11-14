@@ -1,8 +1,29 @@
+<body class="@THEME@">
 
-# version 1.0 (unreleased)
+### version 1.1
+* floating action button no longer gets covered by the snackbar
+* when the contextual action menu shows, it no longer "leaks touches" through to the hidden toolbar
+* fix clipping on some letters in the main view, larger touch targets
+* should now work with automatic backup on Android M+
+* reduced memory use and improved startup time pretty much imperceptibly
+* the text field on the edition screen is now multi-line
+* many other minor code clean ups
+
+### version 1.0
 
 * Daily entry for new blade or one-more-use
 * Can edit entries
 * Dark or light theme
 * Export to CSV file
 * Basic help page
+
+<style>
+body.dark {
+    font-family: sans-serif;
+    background-color: #616161;
+    color: #ffffff;
+}
+body.light {
+    font-family: sans-serif;
+}
+</style>

@@ -1,4 +1,4 @@
-package es.quirk.bladereminder;
+package es.quirk.bladereminder.fragments;
 
 
 interface INotesEditorListener {

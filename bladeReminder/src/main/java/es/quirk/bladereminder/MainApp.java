@@ -17,8 +17,6 @@ public class MainApp extends Application {
 		if (isDebuggable()) {
 			StrictMode.enableDefaults();
 			Timber.plant(new DebugTree());
-		} else {
-			Timber.plant(new Timber.HollowTree());
 		}
 	}
 

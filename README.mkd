@@ -2,7 +2,9 @@
 
 # Compiling
 
-Use gradle from Android Studio e.g. `android-studio/gradle/gradle-2.2.1/bin/gradle`
+Use gradle from Android Studio e.g. `android-studio/gradle/gradle-2.2.1/bin/gradle`, then run:
+
+    gradle assembleDebug
 
 # Updating translations
 
@@ -20,13 +22,9 @@ This will update res/values-es/strings.xml etc with the translated strings.
 
 # Dependencies
 
-As well as the declared dependencies in build.gradle, the following are copied in the source tree:
+As well as the declared dependencies in build.gradle, the following is copied in the source tree:
 
-* [Snackbar](https://github.com/wmora/snackbar)
-* [Material Dialogs](https://github.com/afollestad/material-dialogs)
 * [Preference Fragment](https://github.com/kolavar/android-support-v4-preferencefragment)
-
-Hacked out some broken stuff though.
 
 ## Build failure in packageRelease
 
@@ -47,9 +45,3 @@ An example gradle.properties for the debug key would be this:
     RELEASE_KEY_PASSWORD = android
 
 Place this in the root of the project source code (i.e. same level as settings.gradle)
-
-## Image manipulation
-
-Convert from the dark to light image (only have to modify one this way):
-
-    convert round_red_dark.9.png -fill '#e57373' -opaque '#f44336' -fill '#ef5350' -opaque '#e53935' round_red.9.png

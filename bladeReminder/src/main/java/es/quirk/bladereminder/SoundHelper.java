@@ -1,21 +1,19 @@
 package es.quirk.bladereminder;
 
+import android.util.SparseBooleanArray;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.preference.PreferenceManager;
+import android.support.annotation.RawRes;
 import android.util.SparseIntArray;
 
-import com.google.common.collect.Sets;
-
-import java.util.HashSet;
-
-class SoundHelper implements OnLoadCompleteListener {
+public class SoundHelper implements OnLoadCompleteListener {
 	private final SoundPool mSoundPool = VersionedSoundPoolBuilder.newInstance().createSoundPool();
 	private final SparseIntArray mResourceIdToSoundIdMap = new SparseIntArray();
-	private final HashSet<Integer> mLoaded = Sets.newHashSetWithExpectedSize(3);
+	private final SparseBooleanArray mLoaded = new SparseBooleanArray();
 	private final Context mContext;
 
 	public SoundHelper(Context context) {
@@ -26,17 +24,17 @@ class SoundHelper implements OnLoadCompleteListener {
 		loadSound(R.raw.plusone);
 	}
 
-	private void loadSound(int identifier) {
-		Integer soundID = mSoundPool.load(mContext, identifier, 1);
+	private void loadSound(@RawRes int identifier) {
+		int soundID = mSoundPool.load(mContext, identifier, 1);
 		mResourceIdToSoundIdMap.put(identifier, soundID);
 	}
 
 	@Override
 	public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-		mLoaded.add(sampleId);
+		mLoaded.put(sampleId, true);
 	}
 
-	public void playRawSound(int resourceID) {
+	public void playRawSound(@RawRes int resourceID) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 		boolean enabled = prefs.getBoolean("sounds_enabled", false);
 		if (!enabled)
@@ -47,7 +45,7 @@ class SoundHelper implements OnLoadCompleteListener {
 		float volume = actualVolume / (2 * maxVolume);
 		int soundID = mResourceIdToSoundIdMap.get(resourceID);
 		// Is the sound loaded already?
-		if (mLoaded.contains(soundID)) {
+		if (mLoaded.get(soundID)) {
 			mSoundPool.play(soundID, volume, volume, 1, 0, 1f);
 		}
 	}

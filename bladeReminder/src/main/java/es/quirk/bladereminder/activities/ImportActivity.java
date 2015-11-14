@@ -1,10 +1,11 @@
-package es.quirk.bladereminder;
+package es.quirk.bladereminder.activities;
 
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -12,18 +13,20 @@ import android.widget.ProgressBar;
 import java.io.IOException;
 import java.io.InputStream;
 
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
+import es.quirk.bladereminder.R;
 import es.quirk.bladereminder.contentprovider.ShaveEntryContentProvider;
 import es.quirk.bladereminder.database.DataSource;
 import timber.log.Timber;
 
 public class ImportActivity extends BaseActivity {
 
-    @InjectView(R.id.progressBar1) ProgressBar mProgressBar;
+    @Bind(R.id.progressBar1) ProgressBar mProgressBar;
 
     private class DoImport extends AsyncTask<Uri, Void, Boolean> {
 
+        @NonNull
         @Override
         protected Boolean doInBackground(Uri... data) {
             try {
@@ -76,7 +79,7 @@ public class ImportActivity extends BaseActivity {
         startActivity(mainIntent);
     }
 
-    private void importData(Uri data) {
+    private void importData(@NonNull Uri data) {
         final String scheme = data.getScheme();
         if (!ContentResolver.SCHEME_CONTENT.equals(scheme)) {
             return;

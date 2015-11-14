@@ -1,8 +1,10 @@
-package es.quirk.bladereminder;
+package es.quirk.bladereminder.fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,18 +16,20 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import es.quirk.bladereminder.R;
 
 public class EnterNoteDialog extends DialogFragment {
 
-    @InjectView(R.id.txt_your_note) EditText mEditText;
-    @InjectView(R.id.do_not_show_checkbox) CheckBox mDontShow;
+    @Bind(R.id.txt_your_note) EditText mEditText;
+    @Bind(R.id.do_not_show_checkbox) CheckBox mDontShow;
     private int mPosition;
     private static final String NO_COUNT = "nah_count";
 
+    @NonNull
     public static DialogFragment newInstance(int position) {
         EnterNoteDialog d = new EnterNoteDialog();
         Bundle bundle = new Bundle();
@@ -35,10 +39,10 @@ public class EnterNoteDialog extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_insert_note, container);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         getDialog().setTitle(R.string.add_comment_dlg_title);
         if (savedInstanceState != null)
             mPosition = savedInstanceState.getInt("position");
@@ -57,11 +61,11 @@ public class EnterNoteDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     @OnCheckedChanged(R.id.do_not_show_checkbox)
-    void checkChanged(CheckBox check) {
+    void checkChanged(@NonNull CheckBox check) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         prefs.edit().putBoolean("show_comment_dialog", !check.isChecked()).apply();
     }

@@ -35,6 +35,8 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -65,6 +67,7 @@ public class TextDrawable extends Drawable {
     /* Paint to hold most drawing primitives for the text */
     private TextPaint mTextPaint;
     /* Layout is used to measure and draw the text */
+    @Nullable
     private StaticLayout mTextLayout;
     /* Alignment of the text inside its bounds */
     private Layout.Alignment mTextAlignment = Layout.Alignment.ALIGN_NORMAL;
@@ -75,6 +78,7 @@ public class TextDrawable extends Drawable {
     /* Container for the bounds to be reported to widgets */
     private Rect mTextBounds;
     /* Text string to draw */
+    @Nullable
     private CharSequence mText = "";
 
     /* Attribute lists to pull default values from the current theme */
@@ -89,7 +93,7 @@ public class TextDrawable extends Drawable {
     };
 
 
-    public TextDrawable(Context context) {
+    public TextDrawable(@NonNull Context context) {
         super();
         //Used to load and scale resource items
         mResources = context.getResources();
@@ -167,7 +171,7 @@ public class TextDrawable extends Drawable {
      * Set the text that will be displayed
      * @param text Text to display
      */
-    public void setText(CharSequence text) {
+    public void setText(@Nullable CharSequence text) {
         if (text == null) text = "";
 
         mText = text;
@@ -178,6 +182,7 @@ public class TextDrawable extends Drawable {
     /**
      * Return the text currently being displayed
      */
+    @Nullable
     public CharSequence getText() {
         return mText;
     }
@@ -283,7 +288,7 @@ public class TextDrawable extends Drawable {
      * style that you specified.
      *
      */
-    private void setTypeface(Typeface tf, int style) {
+    private void setTypeface(@Nullable Typeface tf, int style) {
         if (style > 0) {
             if (tf == null) {
                 tf = Typeface.defaultFromStyle(style);
@@ -422,16 +427,17 @@ public class TextDrawable extends Drawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         final Rect bounds = getBounds();
         final int count = canvas.save();
         canvas.translate(bounds.left, bounds.top);
         if (mTextPath == null) {
             //Allow the layout to draw the text
-            mTextLayout.draw(canvas);
+            if (mTextLayout != null)
+                mTextLayout.draw(canvas);
         } else {
             //Draw directly on the canvas using the supplied path
-            canvas.drawTextOnPath(mText.toString(), mTextPath, 0, 0, mTextPaint);
+            canvas.drawTextOnPath(mText != null ? mText.toString() : "", mTextPath, 0, 0, mTextPaint);
         }
         canvas.restoreToCount(count);
     }

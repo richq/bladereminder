@@ -15,6 +15,8 @@
   <string name="colours_enabled">Colores activados</string>
   <string name="colours_enabled_summary">Mostrar un fondo en lila, blanco, azul, verde, amarillo, naranja o rojo según la afilada que esté la hoja</string>
   <string name="commentText">Aquí va el comentario</string>
+  <string name="changelog">Cambios</string>
+  <string name="changelog_summary">Detalles de los últimos cambios</string>
   <string name="countLabel">Usos</string>
   <string name="dark">Oscuro</string>
   <string name="dateLabelString">Fecha</string>
@@ -37,7 +39,7 @@
   <string name="nothing_to_share">No hay entradas para compartir</string>
   <string name="nothing_to_share_to">No hay apps configuradas para compartir</string>
   <string name="onemore">Un uso más</string>
-  <string name="shave_file_bakcup">Copia de seguridad del fichero de afeitados</string>
+  <string name="shave_file_backup">Copia de seguridad del fichero de afeitados</string>
   <string name="shaves_csv">spreadsheets/afeitados.csv</string>
   <string name="show_comment_dialog">Muestra el dialogo de comentarios</string>
   <string name="sounds_enabled">Sonidos activados</string>
@@ -53,5 +55,11 @@
   <string name="with_template">Con la plantilla %s</string>
   <string name="yesterday">Ayer</string>
   <string name="sharpness_range">Rango de afilado</string>
-  <string name="sharpness_range_summary">Cambia el rango de valores para los colores de afilado</string>
+  <string name="sharpness_range_summary">Cambia el rango de valores para los colores de lo afilado, actualmente va de %1$s a %2$s</string>
+  <string name="action_stats">Estadísticas</string>
+  <string name="average_uses">Medio de usos</string>
+  <string name="max_uses">Usos más alto</string>
+  <string name="stats_since">Estadísticas desde</string>
+  <string name="never">Nunca</string>
+  <string name="not_enough_entries">Todavía no hay bastantes entradas</string>
 </resources>

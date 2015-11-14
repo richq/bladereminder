@@ -1,0 +1,9 @@
+<resources>
+    <style name="AppTheme" parent="android:Theme.Material">
+        <item name="colorPrimary">@color/deep_purple_500</item>
+        <item name="colorPrimaryDark">@color/deep_purple_900</item>
+        <item name="colorAccent">@color/deep_purple_300</item>
+        <item name="actionModeBackground">@color/deep_purple_900</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+</resources>

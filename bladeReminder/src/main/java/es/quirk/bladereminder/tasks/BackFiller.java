@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -41,6 +42,7 @@ public class BackFiller extends AsyncTask<Void, Void, Void> {
 		}
 	}
 
+	@Nullable
 	@Override
 	protected Void doInBackground(Void... params) {
 		// since the first entry, or since 28 days ago fill in crud

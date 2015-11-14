@@ -1,4 +1,4 @@
-package es.quirk.bladereminder;
+package es.quirk.bladereminder.activities;
 
 import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
@@ -9,6 +9,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,8 +23,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import butterknife.InjectView;
+import butterknife.Bind;
+import es.quirk.bladereminder.R;
+import es.quirk.bladereminder.fragments.ShaveFragment;
+import es.quirk.bladereminder.Utils;
 import es.quirk.bladereminder.database.DataSource;
+import es.quirk.bladereminder.fragments.StatisticsFragment;
 import es.quirk.bladereminder.tasks.RemoveShareTask;
 import es.quirk.bladereminder.tasks.StartLoggerTask;
 import es.quirk.bladereminder.widgets.TextDrawable;
@@ -31,11 +38,11 @@ import timber.log.Timber;
 public class BladeReminderActivity extends BaseActivity  {
 
     private final static String SHARE_TYPE = "text/csv";
-    @InjectView(R.id.progressBar1) ProgressBar mProgressBar;
+    @Bind(R.id.progressBar1) ProgressBar mProgressBar;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         logStart();
         setContentView(R.layout.activity_blade_reminder);
@@ -58,8 +65,13 @@ public class BladeReminderActivity extends BaseActivity  {
             return Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET;
     }
 
+    private void removeStatsEntry(@NonNull Menu menu) {
+        MenuItem menuItem = menu.findItem(R.id.action_stats);
+        menuItem.setVisible(false);
+    }
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.blade_reminder, menu);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(getResetFlag());
@@ -75,10 +87,13 @@ public class BladeReminderActivity extends BaseActivity  {
         menuItem = menu.findItem(R.id.action_help);
         menuItem.setIcon(drawableHelp);
 
+        removeStatsEntry(menu);
+
         return true;
     }
 
-    private static FileOutputStream lessBrokenOpenFileOutput(Context context, String path) throws IOException {
+    @NonNull
+    private static FileOutputStream lessBrokenOpenFileOutput(@NonNull Context context, @NonNull String path) throws IOException {
         File file = new File(context.getFilesDir(), path);
         Timber.d("mkdir " + file.getParentFile());
         Utils.mkdirp(file.getParentFile());
@@ -97,10 +112,11 @@ public class BladeReminderActivity extends BaseActivity  {
             mContext = context;
         }
 
+        @Nullable
         @Override
         protected Void doInBackground(Void... params) {
             FileOutputStream tempStream = null;
-            final String shavesCsv = getResources().getString(R.string.shaves_csv);
+            final String shavesCsv = getString(R.string.shaves_csv);
             try {
                 tempStream = lessBrokenOpenFileOutput(mContext, shavesCsv);
                 DataSource datasource = new DataSource(mContext);
@@ -129,7 +145,7 @@ public class BladeReminderActivity extends BaseActivity  {
             shareIntent.setType(SHARE_TYPE);
             // putExtra or setData?? this works with gdrive at least, but not owncloud
             shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
-            String subject = getString(R.string.shave_file_bakcup) + " " + Utils.todaysDate();
+            String subject = getString(R.string.shave_file_backup) + " " + Utils.todaysDate();
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
             shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.backup));
             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -144,7 +160,7 @@ public class BladeReminderActivity extends BaseActivity  {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             Intent intent = new Intent();
@@ -161,12 +177,20 @@ public class BladeReminderActivity extends BaseActivity  {
             intent.setClass(BladeReminderActivity.this, HelpActivity.class);
             startActivity(intent);
             return true;
+        } else if (id == R.id.action_stats) {
+            StatisticsFragment statisticsFragment = StatisticsFragment.newInstance();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(android.R.anim.fade_in,
+                    android.R.anim.fade_out);
+            transaction.replace(R.id.container, statisticsFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private Uri getFileUri(Context context) {
-        final String shavesCsv = getResources().getString(R.string.shaves_csv);
+    private Uri getFileUri(@NonNull Context context) {
+        final String shavesCsv = getString(R.string.shaves_csv);
         File requestFile = new File(context.getFilesDir(), shavesCsv);
         Timber.d("request file: %s", requestFile.toString());
         Uri fileUri = FileProvider.getUriForFile(

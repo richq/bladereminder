@@ -51,6 +51,9 @@
     <PreferenceCategory
         android:key="about_box"
         android:title="@string/about" >
+        <Preference android:title="@string/changelog"
+            android:key="changelog_button"
+            android:summary="@string/changelog_summary"/>
         <Preference android:title="@string/open_source_licences"
             android:key="about_button"
             android:summary="@string/open_source_licences_details"/>

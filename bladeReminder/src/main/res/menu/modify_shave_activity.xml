@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:compat="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="es.quirk.bladereminder.BladeReminderActivity" >
+    tools:context="es.quirk.bladereminder.activities.BladeReminderActivity" >
 
     <item
         android:id="@+id/modify_done"

@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -22,33 +24,34 @@ import timber.log.Timber;
 
 public class DateLabel extends TextView implements OnSharedPreferenceChangeListener {
 
-	private DateFormat mUserDateFormat;
+	private DateFormat mUserDateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
 	private final DateFormat mDateFormat = new SimpleDateFormat(Utils.DATE_FORMAT, Locale.US);
 	@SuppressLint("SimpleDateFormat")
 	private final DateFormat mLocaleDayFormat = new SimpleDateFormat("EEEE");
 
-	public DateLabel(Context context, AttributeSet attrs, int defStyle) {
+	public DateLabel(@NonNull Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init(context);
 	}
 
-	public DateLabel(Context context, AttributeSet attrs) {
+	public DateLabel(@NonNull Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init(context);
 	}
 
-	public DateLabel(Context context) {
+	public DateLabel(@NonNull Context context) {
 		super(context);
 		init(context);
 	}
 
-	private void init(Context context) {
+	private void init(@NonNull Context context) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		prefs.registerOnSharedPreferenceChangeListener(this);
 		setUserDateFormatFromPrefs(prefs);
 	}
 
-	private CharSequence niceDate(Resources resources, final CharSequence date) {
+	@Nullable
+	private CharSequence niceDate(@NonNull Resources resources, @Nullable final CharSequence date) {
 		// How can mDateFormat be null? Dunno, but it is sometimes.
 		if (date == null || mDateFormat == null)
 			return date;
@@ -83,14 +86,14 @@ public class DateLabel extends TextView implements OnSharedPreferenceChangeListe
 	}
 
 	@Override
-	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+	public void onSharedPreferenceChanged(@NonNull SharedPreferences prefs, String key) {
 		if ("date_format".equals(key)) {
 			setUserDateFormatFromPrefs(prefs);
 		}
 	}
 
 	@SuppressLint("SimpleDateFormat")
-	private void setUserDateFormatFromPrefs(SharedPreferences prefs) {
+	private void setUserDateFormatFromPrefs(@NonNull SharedPreferences prefs) {
 		try {
 			mUserDateFormat = new SimpleDateFormat(prefs.getString("date_format", Utils.DATE_FORMAT));
 		} catch (IllegalArgumentException ex) {

@@ -1,7 +1,10 @@
-package es.quirk.bladereminder;
+package es.quirk.bladereminder.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+
+import es.quirk.bladereminder.R;
+import es.quirk.bladereminder.fragments.SettingsFragment;
 
 public class SetPreferencesActivity extends BaseActivity {
 

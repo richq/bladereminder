@@ -1,22 +1,25 @@
 package es.quirk.bladereminder;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.DrawableRes;
+import android.util.SparseArray;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 
+import static butterknife.ButterKnife.Finder.listOf;
 import com.google.common.collect.Range;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.List;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map.Entry;
 
 import timber.log.Timber;
 
@@ -26,20 +29,23 @@ public final class Utils {
 	// 54% of 255 = 138
 	public final static int DARK_TEXT = Color.argb(138, 0, 0, 0);
 	public final static int LIGHT_TEXT = Color.WHITE;
-	public final static HashSet<String> COLOUR_PREFS = new HashSet<>();
-
-	static {
-		COLOUR_PREFS.add("purple_sharp");
-		COLOUR_PREFS.add("white_sharp");
-		COLOUR_PREFS.add("blue_sharp");
-		COLOUR_PREFS.add("green_sharp");
-		COLOUR_PREFS.add("yellow_sharp");
-		COLOUR_PREFS.add("orange_sharp");
-	}
+	public final static List<String> COLOUR_PREFS = listOf(
+		"purple_sharp",
+		"white_sharp",
+		"blue_sharp",
+		"green_sharp",
+		"yellow_sharp",
+		"orange_sharp"
+	);
 
 	// utility class, so no instances.
 	private Utils() {}
 
+	public static boolean isColourPref(@NonNull String s) {
+		return s.endsWith("_sharp");
+	}
+
+	@NonNull
 	public static DateFormat createDateFormatYYYYMMDD() {
 		return new SimpleDateFormat(DATE_FORMAT, Locale.US);
 	}
@@ -54,14 +60,14 @@ public final class Utils {
 	 * Make a directory, if it does not exist already.
 	 * @param dirname the directory to create.
 	 */
-	public static void mkdirp(final File dirname) throws IOException {
-		if (!dirname.exists()) {
-			if (!dirname.mkdirs())
-				throw new IOException("Failed to create directory " + dirname.getPath());
+	public static void mkdirp(@NonNull final File dirname) throws IOException {
+		if (!dirname.exists() && !dirname.mkdirs()) {
+			throw new IOException("Failed to create directory " + dirname.getPath());
 		}
 	}
 
 	// open closed that won't throw
+	@NonNull
 	private static Range<Integer> openClosed(int min, int max) {
 		try {
 			return Range.openClosed(min, max);
@@ -70,7 +76,7 @@ public final class Utils {
 		}
 	}
 
-	public static boolean setRangesFromPrefs(SharedPreferences prefs, HashMap<Integer, Range<Integer> > ranges) {
+	public static boolean setRangesFromPrefs(@NonNull SharedPreferences prefs, @NonNull SparseArray<Range<Integer> > ranges) {
 		int purple = prefs.getInt("purple_sharp", 1);
 		int white = prefs.getInt("white_sharp", 2);
 		int blue = prefs.getInt("blue_sharp", 3);
@@ -79,7 +85,7 @@ public final class Utils {
 		int orange = prefs.getInt("orange_sharp", 6);
 
 		String themeSetting = prefs.getString("default_theme", "0");
-		if (themeSetting.equals("0")) {
+		if ("0".equals(themeSetting)) {
 			ranges.put(R.drawable.round_purple, Range.atMost(purple));
 			ranges.put(R.drawable.round_white, openClosed(purple, white));
 			ranges.put(R.drawable.round_blue, openClosed(white, blue));
@@ -100,18 +106,20 @@ public final class Utils {
 		return prefs.getBoolean("colours_enabled", true);
 	}
 
-	public static int getCountColour(int count, HashMap<Integer, Range<Integer>> ranges) {
+	public static int getCountColour(int count, @NonNull SparseArray<Range<Integer>> ranges) {
 		int resource = 0;
-		for (Entry<Integer, Range<Integer>> rangeEntry : ranges.entrySet()) {
-			if (rangeEntry.getValue().contains(count)) {
-				resource = rangeEntry.getKey();
+		int size = ranges.size();
+		for (int i = 0; i < size; i++) {
+			int key = ranges.keyAt(i);
+			if (ranges.get(key).contains(count)) {
+				resource = key;
 				break;
 			}
 		}
 		return resource;
 	}
 
-	public static int getTextColourForResource(int in) {
+	public static int getTextColourForResource(@DrawableRes int in) {
 		// see scripts/contrast.py for how to generate the text for a given background
 		// e.g. ./scripts/contrast.py EF5350
 		switch (in) {
@@ -141,16 +149,38 @@ public final class Utils {
          * Check if running on the Android Runtime for Chrome.
          * MODEL is "App Runtime for Chrome", and PRODUCT is "arc".
          */
-        public static boolean isChrome() {
-			return "arc".equalsIgnoreCase(Build.PRODUCT) || Build.MODEL.contains("Chrome");
-		}
+	public static boolean isChrome() {
+		return "arc".equalsIgnoreCase(Build.PRODUCT) || Build.MODEL.contains("Chrome");
+	}
 
-	public static void close(Closeable c) {
+	public static void close(@Nullable Closeable c) {
 		try {
 			if (c != null)
 				c.close();
 		} catch (IOException e) {
 			Timber.w(e, "Exception closing a closeable, not much to do");
 		}
+	}
+
+	public static String niceFormat(float value) {
+		String res = String.format(Locale.US, "%.1f", value);
+		// remove spurious .0 at the end of floats
+		if (res.endsWith(".0"))
+			return res.replace(".0", "");
+
+		String prec = String.format(Locale.US, "%.2f", value);
+		// replace some funky decimals with vulgar fractions
+		if (prec.endsWith(".25"))
+			return prec.replace(".25", "¼");
+		if (prec.endsWith(".33"))
+			return prec.replace(".33", "⅓");
+		if (res.endsWith(".5"))
+			return res.replace(".5", "½");
+		if (prec.endsWith(".67"))
+			return prec.replace(".67", "⅔");
+		if (prec.endsWith(".75"))
+			return prec.replace(".75", "¾");
+
+		return res;
 	}
 }

@@ -4,3 +4,4 @@ manifest-merger-release-report.txt
 src/main/res/values/acra.xml
 acra.config
 src/main/res/drawable/round*9.png
+src/main/res/raw/changes.html

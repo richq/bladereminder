@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="es.quirk.bladereminder.BladeReminderActivity"
+    tools:context="es.quirk.bladereminder.activities.BladeReminderActivity"
     tools:ignore="MergeRootFrame">
 
     <include layout="@layout/toolbar"/>
@@ -15,7 +15,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="es.quirk.bladereminder.BladeReminderActivity"
+        tools:context="es.quirk.bladereminder.activities.BladeReminderActivity"
         />
         <View
             android:layout_width="match_parent"

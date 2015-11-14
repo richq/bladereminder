@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 
 import es.quirk.bladereminder.Utils;
 
@@ -13,6 +14,7 @@ public class StartLoggerTask extends AsyncTask<Context, Void, Void> {
     // after this, I don't care.
     private static final int MAX_COUNT_LOG = 100;
 
+    @Nullable
     @Override
     protected Void doInBackground(Context... action) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(action[0]);

@@ -1,11 +1,14 @@
-package es.quirk.bladereminder;
+package es.quirk.bladereminder.fragments;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.support.annotation.NonNull;
+import android.support.annotation.RawRes;
+import android.support.annotation.StringRes;
 import android.support.v4.preference.PreferenceFragment;
 import android.webkit.WebView;
 import android.support.v7.app.AlertDialog;
@@ -20,26 +23,35 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import es.quirk.bladereminder.R;
+import es.quirk.bladereminder.Utils;
 import timber.log.Timber;
 import es.quirk.bladereminder.widgets.RangePreference;
 
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
 
-	private Activity mActivity;
+	private Context mContext;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.preferences);
-		Preference aboutButton = findPreference("about_button");
-		aboutButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference arg0) {
-				//code for what you want it to do
-				showLicenses();
-				return true;
-			}
-		});
+		findPreference("about_button").setOnPreferenceClickListener(
+				new Preference.OnPreferenceClickListener() {
+					@Override
+					public boolean onPreferenceClick(Preference unused) {
+						showWebView(R.raw.licenses, R.string.open_source_licences);
+						return true;
+					}
+				});
+		findPreference("changelog_button").setOnPreferenceClickListener(
+				new Preference.OnPreferenceClickListener() {
+					@Override
+					public boolean onPreferenceClick(Preference unused) {
+						showWebView(R.raw.changes, R.string.changelog);
+						return true;
+					}
+				});
 
 		SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
 		updateDateFormatSummary(sp);
@@ -47,11 +59,11 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		sp.registerOnSharedPreferenceChangeListener(this);
 	}
 
-	private void updateRangeSummary(SharedPreferences sp) {
+	private void updateRangeSummary(@NonNull SharedPreferences sp) {
 		RangePreference rangePref = (RangePreference) findPreference("range");
 		String currval = sp.getString("range", "1,9");
 		try {
-			String template  = getActivity().getResources().getString(R.string.sharpness_range_summary);
+			String template  = getString(R.string.sharpness_range_summary);
 			String [] minmax = currval.split(",");
 			rangePref.setSummary(String.format(template, minmax[0], minmax[1]));
 		} catch (NullPointerException ex) {
@@ -59,55 +71,56 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		}
 	}
 
-	private void updateDateFormatSummary(SharedPreferences sp) {
+	private void updateDateFormatSummary(@NonNull SharedPreferences sp) {
 		EditTextPreference editTextPref = (EditTextPreference) findPreference("date_format");
 		String currval = sp.getString("date_format", Utils.DATE_FORMAT);
-		String template = getActivity().getResources().getString(R.string.with_template);
+		String template = getString(R.string.with_template);
 		editTextPref.setSummary(String.format(template, currval));
 	}
 
 	@Override
-	public void onAttach(Activity activity) {
+	public void onAttach(Context activity) {
 		super.onAttach(activity);
-		mActivity = activity;
+		mContext = activity;
 	}
 
-	private String readTextFile(InputStream inputStream) {
+	private String readTextFile(@NonNull InputStream inputStream) {
 		InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charsets.UTF_8);
 		try {
 			return CharStreams.toString(inputStreamReader);
 		} catch (IOException ex) {
-			Timber.w(ex, "Exception reading in text file (raw license.html)");
+			Timber.w(ex, "Exception reading in text file");
 		} finally {
 			Utils.close(inputStreamReader);
 		}
 		return "";
 	}
 
-	private void showLicenses() {
+	private void showWebView(@RawRes int textFile, @StringRes int titleString) {
 		final String utf8 = Charsets.UTF_8.name();
 		final boolean defaultTheme = getPreferenceScreen().getSharedPreferences().getString("default_theme", "0").equals("0");
-		final String licenseText = readTextFile(getResources().openRawResource(R.raw.licenses));
-		final String licenseTitle = getResources().getString(R.string.open_source_licences);
-		String data = licenseText;
+		final String viewText = readTextFile(getResources().openRawResource(textFile));
+		final String viewTitle = getString(titleString);
+		String data = viewText;
 		try {
 			// data passed to loadData needs to be URI-escaped.
 			// WebView doesn't recode +, see https://stackoverflow.com/a/5034933
-			data = URLEncoder.encode(licenseText.replaceAll("@THEME@", defaultTheme ? "light" : "dark"),
+			data = URLEncoder.encode(viewText.replaceAll("@THEME@", defaultTheme ? "light" : "dark"),
 					utf8)
 				.replaceAll("\\+", "%20");
 			Timber.d(data);
 		} catch (UnsupportedEncodingException ex) {
-			Timber.w(ex, "Unable to encode license page");
+			Timber.w(ex, "Unable to encode text page");
+			return;
 		}
 		final String dataToLoad = data;
 		getActivity().runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				final WebView webView = new WebView(mActivity);
+				final WebView webView = new WebView(mContext);
 				webView.loadData(dataToLoad, "text/html", utf8);
-				AppCompatDialog dialog = new AlertDialog.Builder(mActivity)
-					.setTitle(licenseTitle)
+				AppCompatDialog dialog = new AlertDialog.Builder(mContext)
+					.setTitle(viewTitle)
 					.setView(webView)
 					.setPositiveButton(android.R.string.ok, null)
 					.create();
@@ -118,7 +131,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	}
 
 	@Override
-	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+	public void onSharedPreferenceChanged(@NonNull SharedPreferences prefs, String key) {
 		if ("range".equals(key)) {
 			updateRangeSummary(prefs);
 		}

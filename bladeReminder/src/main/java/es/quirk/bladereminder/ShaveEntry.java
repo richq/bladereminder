@@ -1,5 +1,7 @@
 package es.quirk.bladereminder;
 
+import android.database.Cursor;
+import android.support.annotation.NonNull;
 import java.io.Serializable;
 import java.util.Locale;
 
@@ -43,5 +45,14 @@ public class ShaveEntry implements Serializable {
 		return String.format(Locale.US, "ShaveEntry(id=%d, date='%s', count=%d, comment='%s')",
 				mID, mDate, mCount, mComment);
 	}
+
+	@NonNull
+	public static ShaveEntry fromCursor(@NonNull Cursor cursor) {
+		return new ShaveEntry(cursor.getInt(0),
+				cursor.getString(1),
+				cursor.getInt(2),
+				cursor.getString(3));
+	}
+
 }
 

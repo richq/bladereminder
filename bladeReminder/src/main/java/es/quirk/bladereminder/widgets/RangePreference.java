@@ -1,12 +1,12 @@
 package es.quirk.bladereminder.widgets;
 
-import butterknife.InjectView;
 import butterknife.ButterKnife;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.DialogPreference;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,28 +17,31 @@ import com.google.common.base.Strings;
 
 import java.util.List;
 
-import butterknife.InjectViews;
+import butterknife.Bind;
 import es.quirk.bladereminder.R;
+import es.quirk.bladereminder.Utils;
 
 public class RangePreference extends DialogPreference implements RangeSeekBar.OnRangeSeekBarChangeListener<Integer>, OnClickListener
 {
 	private static final String androidns = "http://schemas.android.com/apk/res/android";
 
-	RangeSeekBar<Integer> mRangeSeekBar;
-	@InjectView(R.id.splashText) TextView mSplashText;
-	@InjectView(R.id.valueText) TextView mValueText;
-	@InjectViews(
+	private RangeSeekBar<Integer> mRangeSeekBar;
+	@Bind(R.id.splashText) TextView mSplashText;
+	@Bind(R.id.valueText) TextView mValueText;
+	@Bind(
 	{R.id.use1, R.id.use2, R.id.use3, R.id.use4, R.id.use5, R.id.use6, R.id.use7}
 	) List<UsesView> mUsesViews;
 
+	@NonNull
 	private final String mDialogMessage;
+	@NonNull
 	private final String mSuffix;
 	private int mDefaultMin;
 	private int mDefaultMax;
 	private int mSelectedMin;
 	private int mSelectedMax;
 
-	public RangePreference(Context context, AttributeSet attrs) {
+	public RangePreference(@NonNull Context context, @NonNull AttributeSet attrs) {
 		super(context,attrs);
 		setDialogLayoutResource(R.layout.range_preference);
 
@@ -54,7 +57,7 @@ public class RangePreference extends DialogPreference implements RangeSeekBar.On
 		setDefaultValuesFromString(defaultValue);
 	}
 
-	private void setDefaultValuesFromString(String val) {
+	private void setDefaultValuesFromString(@NonNull String val) {
 		if (Strings.isNullOrEmpty(val)) {
 			mDefaultMin  = 1;
 			mDefaultMax = 9;
@@ -65,7 +68,7 @@ public class RangePreference extends DialogPreference implements RangeSeekBar.On
 		}
 	}
 
-	private void setSelectedValuesFromString(String val) {
+	private void setSelectedValuesFromString(@NonNull String val) {
 		if (Strings.isNullOrEmpty(val)) {
 			mSelectedMin = mDefaultMin;
 			mSelectedMax = mDefaultMax;
@@ -99,10 +102,9 @@ public class RangePreference extends DialogPreference implements RangeSeekBar.On
 	@Override
 	protected View onCreateDialogView() {
 		View result = super.onCreateDialogView();
-		ButterKnife.inject(this, result);
+		ButterKnife.bind(this, result);
 		mRangeSeekBar = ButterKnife.findById(result, R.id.rangeSeekBar);
-		if (mDialogMessage != null)
-			mSplashText.setText(mDialogMessage);
+		mSplashText.setText(mDialogMessage);
 
 		if (shouldPersist()) {
 			setSelectedValuesFromString(getPersistedString(""));
@@ -123,7 +125,7 @@ public class RangePreference extends DialogPreference implements RangeSeekBar.On
 	}
 
 	@Override
-	protected void onBindDialogView(View v) {
+	protected void onBindDialogView(@NonNull View v) {
 		super.onBindDialogView(v);
 		mRangeSeekBar.setSelectedMinValue(mSelectedMin);
 		mRangeSeekBar.setSelectedMaxValue(mSelectedMax);
@@ -152,49 +154,35 @@ public class RangePreference extends DialogPreference implements RangeSeekBar.On
 		updateUsesView(minValue, maxValue);
 	}
 
-	private void updateValueText(Integer minValue, Integer maxValue) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(minValue);
-		sb.append(" - ");
-		sb.append(maxValue);
+	private void updateValueText(int minValue, int maxValue) {
+		String valueText = minValue + " - " + maxValue;
 		if (!Strings.isNullOrEmpty(mSuffix)) {
-			sb.append(' ');
-			sb.append(mSuffix);
+			valueText = valueText + " " + mSuffix;
 		}
-		String t = sb.toString();
-		mValueText.setText(t);
+		mValueText.setText(valueText);
 	}
 
-	private void updateUsesView(Integer minValue, Integer maxValue) {
+	private void updateEditorViewWhatever(@NonNull SharedPreferences.Editor editor, String entry, int value, int viewId) {
+		editor.putInt(entry, value);
+		mUsesViews.get(viewId).setText(Integer.toString(value), TextView.BufferType.NORMAL);
+	}
+
+	private void updateUsesView(int minValue, int maxValue) {
 		updateValueText(minValue, maxValue);
 		// redo the range...
 		SharedPreferences prefs = getSharedPreferences();
 		float step = (maxValue - minValue) / 5.0f;
 
 		SharedPreferences.Editor editor = prefs.edit();
-
-		editor.putInt("purple_sharp", minValue);
-		mUsesViews.get(0).setText("" + minValue, TextView.BufferType.NORMAL);
-		float next = minValue + step;
-		editor.putInt("white_sharp", Math.round(next));
-		mUsesViews.get(1).setText("" + Math.round(next), TextView.BufferType.NORMAL);
-		next += step;
-		editor.putInt("blue_sharp", Math.round(next));
-		mUsesViews.get(2).setText("" + Math.round(next), TextView.BufferType.NORMAL);
-		next += step;
-		editor.putInt("green_sharp", Math.round(next));
-		mUsesViews.get(3).setText("" + Math.round(next), TextView.BufferType.NORMAL);
-		next += step;
-		editor.putInt("yellow_sharp", Math.round(next));
-		mUsesViews.get(4).setText("" + Math.round(next), TextView.BufferType.NORMAL);
-		next += step;
-		editor.putInt("orange_sharp", Math.round(next));
-		mUsesViews.get(5).setText("" + Math.round(next), TextView.BufferType.NORMAL);
+		float next = minValue;
+		for (int i = 0; i < 6; i++) {
+			if (i > 0)
+				next += step;
+			updateEditorViewWhatever(editor, Utils.COLOUR_PREFS.get(i), Math.round(next), i);
+		}
 		next += 1;
-		mUsesViews.get(6).setText(""+ Math.round(next) + "+");
-
+		mUsesViews.get(6).setText(Integer.toString(Math.round(next)) + "+");
 		editor.apply();
-
 	}
 
 	// Set the positive button listener and onClick action

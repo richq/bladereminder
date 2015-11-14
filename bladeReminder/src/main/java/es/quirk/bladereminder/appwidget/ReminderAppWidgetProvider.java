@@ -1,5 +1,8 @@
 package es.quirk.bladereminder.appwidget;
 
+import android.support.annotation.NonNull;
+import android.util.SparseArray;
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -13,12 +16,9 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Range;
 
-import java.util.HashMap;
-
-import es.quirk.bladereminder.BladeReminderActivity;
+import es.quirk.bladereminder.activities.BladeReminderActivity;
 import es.quirk.bladereminder.R;
 import es.quirk.bladereminder.Utils;
 import es.quirk.bladereminder.contentprovider.ShaveEntryContentProvider;
@@ -26,7 +26,7 @@ import es.quirk.bladereminder.database.Contract.Shaves;
 
 public class ReminderAppWidgetProvider extends AppWidgetProvider {
 
-    private final HashMap<Integer, Range<Integer> > mRanges = Maps.newHashMapWithExpectedSize(7);
+    private final SparseArray<Range<Integer> > mRanges = new SparseArray<>(7);
     private boolean mColoursEnabled = true;
 
     private static class Info {
@@ -35,7 +35,7 @@ public class ReminderAppWidgetProvider extends AppWidgetProvider {
     }
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    public void onUpdate(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager, @NonNull int[] appWidgetIds) {
         Log.d(ReminderAppWidgetProvider.class.getName(), "onUpdate called");
         ShaveWatch.register(context);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -47,13 +47,13 @@ public class ReminderAppWidgetProvider extends AppWidgetProvider {
     }
 
     @Override
-    public void onEnabled(Context context) {
+    public void onEnabled(@NonNull Context context) {
         ShaveWatch.register(context);
         Log.d(ReminderAppWidgetProvider.class.getName(), "onEnabled called for app widget");
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         Log.d(ReminderAppWidgetProvider.class.getName(), "onReceive called");
         ShaveWatch.register(context);
         if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
@@ -66,20 +66,20 @@ public class ReminderAppWidgetProvider extends AppWidgetProvider {
     }
 
     @Override
-    public void onDisabled(Context context) {
+    public void onDisabled(@NonNull Context context) {
         ShaveWatch.unregister(context);
     }
 
-    private Info getLatestInfo(Context context) {
+    @NonNull
+    private Info getLatestInfo(@NonNull Context context) {
         Log.d(ReminderAppWidgetProvider.class.getName(), "getLatestInfo called");
         Uri uri = ShaveEntryContentProvider.CONTENT_URI;
         String[] projection = { Shaves.DATE, Shaves.COUNT };
         String selection = Shaves.COUNT + " > 0";
-        String[] selectionArgs = null;
         String sortOrder = Shaves.DATE + " DESC";
 
         int count = 0;
-        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection, null, sortOrder);
         String date = "";
         if (cursor != null) {
             cursor.moveToFirst();
@@ -106,7 +106,7 @@ public class ReminderAppWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    private void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Info latest) {
+    private void updateAppWidget(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager, int appWidgetId, @NonNull Info latest) {
         // Create an Intent to launch ExampleActivity
         Intent intent = new Intent(context, BladeReminderActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);

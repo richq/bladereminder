@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
@@ -24,14 +26,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.CSVWriter;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 import es.quirk.bladereminder.ShaveEntry;
 import es.quirk.bladereminder.Utils;
 import timber.log.Timber;
 
 public class DataSource {
 	private SQLiteDatabase mDatabase;
+	@NonNull
 	private final UsageHelper mDbHelper;
 	private final DateFormat mDateFormat = Utils.createDateFormatYYYYMMDD();
 
@@ -48,13 +51,7 @@ public class DataSource {
 		mDbHelper.close();
 	}
 
-	public static ShaveEntry cursorToEntry(Cursor cursor) {
-		return new ShaveEntry(cursor.getInt(0),
-				cursor.getString(1),
-				cursor.getInt(2),
-				cursor.getString(3));
-	}
-
+	@NonNull
 	private List<ShaveEntry> getEntry(final String date) {
 		List<ShaveEntry> entries = Lists.newArrayList();
 		String query = Contract.Shaves.SELECT +
@@ -65,7 +62,7 @@ public class DataSource {
 		Cursor cursor = mDatabase.rawQuery(query, args);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			entries.add(cursorToEntry(cursor));
+			entries.add(ShaveEntry.fromCursor(cursor));
 			cursor.moveToNext();
 		}
 		cursor.close();
@@ -125,7 +122,7 @@ public class DataSource {
 		}
 	}
 
-	private void saveEntry(final ShaveEntry entry) {
+	private void saveEntry(@NonNull final ShaveEntry entry) {
 
 		ContentValues values = new ContentValues();
 		boolean isUpdate = entry.getID() != -1;
@@ -148,12 +145,13 @@ public class DataSource {
 
 	}
 
-	private String getOldestDate() {
+	@NonNull
+	public String getOldestDate() {
 		// get the oldest date in the database
 		String query = Contract.Shaves.SELECT + Contract.Shaves.ORDER_BY_DATE_ASC + " LIMIT 1";
 		Cursor cursor = mDatabase.rawQuery(query, null);
 		cursor.moveToFirst();
-		String result = null;
+		String result = "";
 		if (!cursor.isAfterLast()) {
 			result = cursor.getString(1);
 		}
@@ -167,7 +165,7 @@ public class DataSource {
 		return mDateFormat.format(today);
 	}
 
-	public void toCSV(FileOutputStream outstream) throws IOException {
+	public void toCSV(@NonNull FileOutputStream outstream) throws IOException {
 		open();
 		String query = Contract.Shaves.SELECT + Contract.Shaves.ORDER_BY_DATE_ASC;
 		Cursor cursor = mDatabase.rawQuery(query, null);
@@ -219,7 +217,7 @@ public class DataSource {
 		close();
 	}
 
-	public void importData(InputStream is) throws IOException {
+	public void importData(@NonNull InputStream is) throws IOException {
 		open();
 		Closer closer = Closer.create();
 		try {
@@ -268,7 +266,7 @@ public class DataSource {
 		close();
 	}
 
-	private boolean shouldReplace(final ShaveEntry entry, final ShaveEntry newEntry) {
+	private boolean shouldReplace(@NonNull final ShaveEntry entry, @NonNull final ShaveEntry newEntry) {
 		// replace if entry had no comment, new entry has comment
 		final String origComment = entry.getComment();
 		if (Strings.isNullOrEmpty(origComment))
@@ -282,4 +280,79 @@ public class DataSource {
 		return origComment.equals(newComment) &&
 			entry.getCount() != newEntry.getCount();
 	}
+
+	private int getUsageEntries(String what) {
+		// select count(_id) from shaves where count >= 1;
+		int numberEntries = 0;
+		String query = String.format("select count(%s) from %s where %s %s 1",
+				Contract.Shaves._ID, Contract.Shaves.TABLE_NAME, Contract.Shaves.COUNT,
+				what);
+		Timber.d("getUsageEntries: %s", query);
+		Cursor cursor = mDatabase.rawQuery(query, null);
+		cursor.moveToFirst();
+
+		if (!cursor.isAfterLast()) {
+			numberEntries = cursor.getInt(0);
+		}
+		cursor.close();
+		return numberEntries;
+	}
+
+	/**
+	 * @returns the average value.
+	 * @throws ArithmeticException when blades are 0
+	 * @throws NoSuchFieldException when number entries not enough.
+	 */
+	public float getAverage() throws ArithmeticException, NoSuchFieldException {
+		// the calculation is:
+		// number of entries = number of shaves
+		// number of entries with count of 1 = number of blades used
+		// average shaves per blade = number shaves / number blades
+
+		int numberEntries = getUsageEntries(">=");
+		if (numberEntries < 3)
+			throw new NoSuchFieldException();
+		int bladeCount = getUsageEntries("=");
+		if (bladeCount < 1)
+			throw new ArithmeticException();
+		return ((float) numberEntries) / bladeCount;
+	}
+
+	@NonNull
+	public String getOldestUse() {
+		open();
+		// get the oldest date in the database
+		String query = Contract.Shaves.SELECT + Contract.Shaves.WHERE_COUNT_GT_1 +
+			Contract.Shaves.ORDER_BY_DATE_ASC + " LIMIT 1";
+		Cursor cursor = mDatabase.rawQuery(query, null);
+		cursor.moveToFirst();
+		String result = "";
+		if (!cursor.isAfterLast()) {
+			result = cursor.getString(1);
+		}
+		cursor.close();
+		return result;
+	}
+
+	@Nullable
+	private ShaveEntry getHighLowUses(String query) {
+		Cursor cursor = mDatabase.rawQuery(query, null);
+		cursor.moveToFirst();
+		ShaveEntry result = null;
+		if (!cursor.isAfterLast()) {
+			// _ID, DATE, COUNT, COMMENT
+			result = ShaveEntry.fromCursor(cursor);
+		}
+		cursor.close();
+		return result;
+	}
+
+	@Nullable
+	public ShaveEntry getHighestUse() {
+		// get the oldest date in the database
+		String query = Contract.Shaves.SELECT +
+			Contract.Shaves.ORDER_BY_COUNT + " LIMIT 1";
+		return getHighLowUses(query);
+	}
+
 }

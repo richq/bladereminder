@@ -1,27 +1,35 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    tools:context="es.quirk.bladereminder.BladeReminderActivity$PlaceholderFragment" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:orientation="vertical"
+             android:paddingBottom="@dimen/activity_vertical_margin"
+             android:paddingLeft="@dimen/activity_horizontal_margin"
+             android:paddingRight="@dimen/activity_horizontal_margin"
+             tools:context="es.quirk.bladereminder.activities.BladeReminderActivity$PlaceholderFragment">
 
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
     <ListView
         android:id="@+id/shaveList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
-    <com.github.clans.fab.FloatingActionButton
-        android:id="@+id/action_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_marginBottom="8dp"
-        android:layout_marginRight="8dp"
-        fab:fab_colorNormal="@color/deep_purple_500"
-        fab:fab_colorPressed="@color/deep_purple_900"
-        />
-</FrameLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_compat_margin"
+            app:layout_anchor="@id/shaveList"
+            app:layout_anchorGravity="bottom|right|end"
+            app:fabSize="normal"
+            app:borderWidth="0dp"
+            app:elevation="4dp"
+            />
+    </android.support.design.widget.CoordinatorLayout>
+</LinearLayout>

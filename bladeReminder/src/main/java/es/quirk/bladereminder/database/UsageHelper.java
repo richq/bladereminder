@@ -3,6 +3,7 @@ package es.quirk.bladereminder.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 
 import timber.log.Timber;
 
@@ -16,7 +17,7 @@ public class UsageHelper extends SQLiteOpenHelper {
 	}
 
 	@Override
-	public void onCreate(SQLiteDatabase database) {
+	public void onCreate(@NonNull SQLiteDatabase database) {
 		database.execSQL(Contract.Shaves.DATABASE_CREATE);
 	}
 

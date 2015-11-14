@@ -10,6 +10,8 @@ import android.database.ContentObserver;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import es.quirk.bladereminder.contentprovider.ShaveEntryContentProvider;
 import es.quirk.bladereminder.Utils;
@@ -17,17 +19,21 @@ import es.quirk.bladereminder.Utils;
 final class ShaveWatch extends ContentObserver implements OnSharedPreferenceChangeListener {
 
 	private final AppWidgetManager mAppWidgetManager;
+	@NonNull
 	private final ComponentName mComponentName;
+	@NonNull
 	private final Context mContext;
 	private final Handler mHandler;
 
+	@Nullable
 	private static ShaveWatch sContentObserver;
 
-	public static ComponentName nameFromContext(Context c) {
+	@NonNull
+	public static ComponentName nameFromContext(@NonNull Context c) {
 		return new ComponentName(c, ReminderAppWidgetProvider.class);
 	}
 
-	private ShaveWatch(Context context, Handler handler) {
+	private ShaveWatch(@NonNull Context context, Handler handler) {
 		super(handler);
 		mHandler = handler;
 		mContext = context;
@@ -49,18 +55,19 @@ final class ShaveWatch extends ContentObserver implements OnSharedPreferenceChan
 		mContext.sendBroadcast(intent);
 	}
 
+	@NonNull
 	private static Handler getBackgroundThread() {
 		HandlerThread thread = new HandlerThread("ReminderAppWidgetProvider-worker");
 		thread.start();
 		return new Handler(thread.getLooper());
 	}
 
-	private void unregisterAndStop(Context context) {
+	private void unregisterAndStop(@NonNull Context context) {
 		context.getContentResolver().unregisterContentObserver(this);
 		mHandler.getLooper().quit();
 	}
 
-	public synchronized static void register(Context context) {
+	public synchronized static void register(@NonNull Context context) {
 		if (sContentObserver == null) {
 			sContentObserver = new ShaveWatch(context, getBackgroundThread());
 			context.getContentResolver().registerContentObserver(
@@ -70,7 +77,7 @@ final class ShaveWatch extends ContentObserver implements OnSharedPreferenceChan
 		}
 	}
 
-	public synchronized static void unregister(Context context) {
+	public synchronized static void unregister(@NonNull Context context) {
 		if (sContentObserver == null)
 			return;
 		// any widgets active?
@@ -86,7 +93,7 @@ final class ShaveWatch extends ContentObserver implements OnSharedPreferenceChan
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 		if ("colours_enabled".equals(key) || "default_theme".equals(key)
-				|| Utils.COLOUR_PREFS.contains(key)) {
+				|| Utils.isColourPref(key)) {
 			// update too
 			onChange(false);
 		}

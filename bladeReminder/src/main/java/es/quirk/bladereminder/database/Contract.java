@@ -14,6 +14,7 @@ public final class Contract {
 
         public static final String TABLE_NAME = "shaves";
         public static final String DATE = "date";
+        public static final String DATE_DESC = "date DESC";
         public static final String COUNT = "count";
         public static final String COMMENT = "comment";
 
@@ -30,9 +31,17 @@ public final class Contract {
                 "select %s, strftime('%%Y-%%m-%%d', %s), %s, %s from %s ",
                 _ID, DATE, COUNT, COMMENT, TABLE_NAME);
         public final static String ORDER_BY_DATE = String.format(
-                " order by %s DESC", DATE);
+                " order by %s", DATE_DESC);
         public final static String ORDER_BY_DATE_ASC = String.format(
                 " order by %s ASC", DATE);
+
+        public final static String ORDER_BY_COUNT = String.format(
+                " order by %s DESC", COUNT);
+
+        public final static String ORDER_BY_COUNT_ASC = String.format(
+                " order by %s ASC", COUNT);
+
+        public final static String WHERE_COUNT_GT_1 = " where count >= 1 ";
 
         // avoid instances
         private Shaves() {}

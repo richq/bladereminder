@@ -23,14 +23,19 @@
 -dontwarn java.beans.PropertyEditorManager
 # butterknife
 -dontwarn butterknife.internal.**
--keep class **$$ViewInjector { *; }
--keepnames class * { @butterknife.InjectView *;}
+-keep class **$$ViewBinder { *; }
+-keepnames class * { @butterknife.Bind *;}
 # google play services
 -dontwarn android.support.v4.**
 -dontskipnonpubliclibraryclasses
 -dontwarn com.google.**
 -keep class * extends java.util.ListResourceBundle {
     protected Object[][] getContents();
+}
+# design
+
+-keep public class * extends android.support.design.widget.CoordinatorLayout$Behavior {
+    public <init>(android.content.Context, android.util.AttributeSet);
 }
 
 -keepattributes SourceFile,LineNumberTable

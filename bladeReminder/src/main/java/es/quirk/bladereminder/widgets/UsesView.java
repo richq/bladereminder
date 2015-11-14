@@ -1,5 +1,7 @@
 package es.quirk.bladereminder.widgets;
 
+import android.support.annotation.NonNull;
+import android.util.SparseArray;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -7,10 +9,8 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.support.v7.widget.AppCompatTextView;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Range;
 
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,27 +19,27 @@ import timber.log.Timber;
 
 public class UsesView extends AppCompatTextView implements OnSharedPreferenceChangeListener {
 
-	private final HashMap<Integer, Range<Integer> > mRanges = Maps.newHashMapWithExpectedSize(7);
+	private final SparseArray<Range<Integer> > mRanges = new SparseArray<>(7);
 	private boolean mColoursEnabled = true;
 	private boolean mLightTheme = true;
 	private final Pattern mDigits = Pattern.compile("[^0-9]*(\\d+)[^0-9]*");
 
-	public UsesView(Context context, AttributeSet attrs, int defStyle) {
+	public UsesView(@NonNull Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init(context);
 	}
 
-	public UsesView(Context context, AttributeSet attrs) {
+	public UsesView(@NonNull Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init(context);
 	}
 
-	public UsesView(Context context) {
+	public UsesView(@NonNull Context context) {
 		super(context);
 		init(context);
 	}
 
-	private void init(Context context) {
+	private void init(@NonNull Context context) {
 		Timber.d("init in usesview");
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		prefs.registerOnSharedPreferenceChangeListener(this);
@@ -50,7 +50,7 @@ public class UsesView extends AppCompatTextView implements OnSharedPreferenceCha
 	}
 
 	@Override
-	public void setText(CharSequence text, BufferType type) {
+	public void setText(@NonNull CharSequence text, BufferType type) {
 		if (text.length() == 0 || "0".equals(text))
 			super.setText("-", type);
 		else
@@ -62,7 +62,7 @@ public class UsesView extends AppCompatTextView implements OnSharedPreferenceCha
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 		if ("colours_enabled".equals(key) || "default_theme".equals(key)
-				|| Utils.COLOUR_PREFS.contains(key)) {
+				|| Utils.isColourPref(key)) {
 			mColoursEnabled = Utils.setRangesFromPrefs(prefs, mRanges);
 			setColourFromContent();
 		}
