@@ -6,7 +6,7 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        compat:showAsAction="withText"
+        compat:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/action_settings"
         android:titleCondensed="@string/action_settings"
@@ -21,15 +21,42 @@
         android:titleCondensed="@string/action_stats"
         />
 
+    <item
+        android:id="@+id/action_new_razor"
+        android:orderInCategory="99"
+        compat:showAsAction="withText"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/action_new_razor"
+        android:titleCondensed="@string/action_new_razor"
+        />
+
+    <item
+        android:id="@+id/action_modify_razor"
+        android:orderInCategory="99"
+        compat:showAsAction="withText"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/action_modify_razor"
+        android:titleCondensed="@string/action_modify_razor"
+        />
+
+    <item
+        android:id="@+id/action_delete_razor"
+        android:orderInCategory="99"
+        compat:showAsAction="withText"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="@string/action_delete_razor"
+        android:titleCondensed="@string/action_delete_razor"
+        />
+
     <item android:id="@+id/action_share"
         android:orderInCategory="98"
-        compat:showAsAction="ifRoom"
+        compat:showAsAction="always"
         android:title="@string/action_share"/>
 
     <item
         android:id="@+id/action_help"
         android:orderInCategory="97"
-        compat:showAsAction="ifRoom"
+        compat:showAsAction="always"
         android:title="@string/action_help"
         android:titleCondensed="@string/action_help"
         />

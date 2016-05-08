@@ -7,19 +7,35 @@
     tools:ignore="MergeRootFrame">
 
     <include layout="@layout/toolbar"/>
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <FrameLayout
-        android:id="@+id/container"
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="es.quirk.bladereminder.activities.BladeReminderActivity"
-        />
-        <View
+        android:orientation="vertical"
+        >
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.view.PagerTabStrip
+            android:id="@+id/pager_tab_strip"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:background="@drawable/toolbar_drop_shadow" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp" />
+
+    </android.support.v4.view.ViewPager>
+    </android.support.design.widget.CoordinatorLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@drawable/toolbar_drop_shadow" />
     </FrameLayout>
 </LinearLayout>

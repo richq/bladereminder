@@ -13,16 +13,18 @@ public class ShaveEntry implements Serializable {
 	private final String mDate;
 	private final int mCount;
 	private final String mComment;
+	private final String mRazorId;
 
 	public ShaveEntry(String date) {
-		this(-1, date, 0, "");
+		this(-1, date, 0, "", "1");
 	}
 
-	public ShaveEntry(long id, String date, int count, String comment) {
+	public ShaveEntry(long id, String date, int count, String comment, String razorId) {
 		mID = id;
 		mDate = date;
 		mCount = count;
 		mComment = comment;
+		mRazorId = razorId;
 	}
 
 	public long getID() {
@@ -41,9 +43,13 @@ public class ShaveEntry implements Serializable {
 		return mComment;
 	}
 
+	public String getRazor() {
+		return mRazorId;
+	}
+
 	public String toString() {
-		return String.format(Locale.US, "ShaveEntry(id=%d, date='%s', count=%d, comment='%s')",
-				mID, mDate, mCount, mComment);
+		return String.format(Locale.US, "ShaveEntry(id=%d, date='%s', count=%d, comment='%s', razorid=%s)",
+				mID, mDate, mCount, mComment, mRazorId);
 	}
 
 	@NonNull
@@ -51,7 +57,8 @@ public class ShaveEntry implements Serializable {
 		return new ShaveEntry(cursor.getInt(0),
 				cursor.getString(1),
 				cursor.getInt(2),
-				cursor.getString(3));
+				cursor.getString(3),
+				cursor.getString(4));
 	}
 
 }

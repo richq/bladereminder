@@ -1,5 +1,10 @@
 <body class="@THEME@">
 
+### version 1.2
+* new feature: keep track of multiple razors!
+* update to the latest libraries
+* adjustments have been made to make for a more pleasant experience
+
 ### version 1.1.2
 * fix bug exporting to CSV file after daylight saving time changes (yes, really)
 

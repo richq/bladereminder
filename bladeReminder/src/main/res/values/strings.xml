@@ -34,7 +34,7 @@
     <string name="start_import">Start importing</string>
     <string name="cancel_import">Cancel</string>
     <string name="import_activity_name">Import External Data</string>
-    <string name="import_text_help">You can import data from a file containing comma separated values. These should be the date, the shave count and any comments. I\'ll try to do my best to resolve conflicts.</string>
+    <string name="import_text_help">You can import data from a file containing comma separated values. These should be the date, the shave count, any comments and optionally the name of the razor used. I\'ll try to do my best to resolve conflicts.</string>
     <string name="light">Light</string>
     <string name="modify_done">All done</string>
     <string name="modify_name">Edit Shave Details</string>
@@ -69,5 +69,17 @@
 
     <string name="not_enough_entries">Not enough entries yet</string>
 
+    <string name="action_new_razor">Add Razor</string>
+    <string name="action_modify_razor">Edit Razor Name</string>
+    <string name="action_delete_razor">Delete Razor</string>
+    <string name="add_razor_dlg_title">Add a new razor</string>
+    <string name="add_razor_dlg_message">Give the razor a nick name to make keeping track of multiple razors a bit easier</string>
+    <string name="add_razor_dlg_ok">Add this razor</string>
+
+    <string name="edit_razor_dlg_title">Change razor name</string>
+    <string name="edit_razor_dlg_message">Change the name given to this razor</string>
+    <string name="edit_razor_dlg_ok">Save the change</string>
+
+    <string name="razorLabel">Razor Used</string>
 
 </resources>

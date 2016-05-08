@@ -3,7 +3,7 @@ package es.quirk.bladereminder;
 import android.app.Application;
 import android.content.pm.ApplicationInfo;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
+import android.support.v7.preference.PreferenceManager;
 
 import timber.log.Timber;
 

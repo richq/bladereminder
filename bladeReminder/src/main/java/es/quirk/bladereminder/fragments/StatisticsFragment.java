@@ -1,9 +1,5 @@
 package es.quirk.bladereminder.fragments;
-import java.text.SimpleDateFormat;
-import java.text.DateFormat;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,12 +10,10 @@ import android.widget.TextView;
 import es.quirk.bladereminder.R;
 import es.quirk.bladereminder.ShaveEntry;
 import es.quirk.bladereminder.Utils;
-import timber.log.Timber;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.Unbinder;
 import es.quirk.bladereminder.database.DataSource;
-import java.util.Date;
-import java.text.ParseException;
 
 /**
  * Use the {@link StatisticsFragment#newInstance} factory method to
@@ -27,14 +21,13 @@ import java.text.ParseException;
  */
 public class StatisticsFragment extends Fragment {
 
-    @Bind(R.id.stats_highest_uses) TextView mHighestUses;
-    @Bind(R.id.stats_highest_uses_date) TextView mHighestUsesDate;
-    @Bind(R.id.stats_average_uses) TextView mAverageUses;
-    @Bind(R.id.oldest_date) TextView mOldestDate;
+    @BindView(R.id.stats_highest_uses) TextView mHighestUses;
+    @BindView(R.id.stats_highest_uses_date) TextView mHighestUsesDate;
+    @BindView(R.id.stats_average_uses) TextView mAverageUses;
+    @BindView(R.id.oldest_date) TextView mOldestDate;
 
     private DataSource mDataSource;
-    private final DateFormat mLocalFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG);
-    private final DateFormat mDateFormat = Utils.createDateFormatYYYYMMDD();
+    private Unbinder mUnbinder;
 
     /**
      * Use this factory method to create a new instance of
@@ -63,7 +56,7 @@ public class StatisticsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDetach();
-        ButterKnife.unbind(this);
+        mUnbinder.unbind();
     }
 
     private void fillstats() {
@@ -92,7 +85,7 @@ public class StatisticsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_statistics, container, false);
-        ButterKnife.bind(this, rootView);
+        mUnbinder = ButterKnife.bind(this, rootView);
         mDataSource = new DataSource(rootView.getContext());
         fillstats();
         return rootView;

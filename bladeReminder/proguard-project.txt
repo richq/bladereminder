@@ -21,10 +21,6 @@
 -dontwarn java.beans.Introspector
 -dontwarn java.beans.PropertyDescriptor
 -dontwarn java.beans.PropertyEditorManager
-# butterknife
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
--keepnames class * { @butterknife.Bind *;}
 # google play services
 -dontwarn android.support.v4.**
 -dontskipnonpubliclibraryclasses

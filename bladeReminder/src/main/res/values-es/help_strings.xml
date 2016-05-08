@@ -4,5 +4,8 @@
   <string name="help_second_1">Cada día que uses la hoja, márcalo en la lista y toca el iconito de la maquinilla de afeitar en el menú.</string>
   <string name="help_modify">Puedes modificar el comentario o usos de la hoja guardado para un día tocando el día y luego el iconito de editar.</string>
   <string name="help_third">Cuando comiences con una nueva hoja, elige el día y toca la hoja en el menú</string>
+  <string name="help_the_razors">Puedes añadir las maquinillas adicionales que usas a diario usando la opción en el menú</string>
+  <string name="help_add_per_razor">Al añadir un afeitado, solo se añade a la maquinilla seleccionada. Afeitados registrados a otras maquinillas se quedan en gris.</string>
+  <string name="help_razor_swipe">Se puede cambiar entre maquinillas deslizando hacia la izquierda o derecha</string>
   <string name="got_it">¡Vale!</string>
 </resources>

@@ -1,2 +1,1 @@
-include ':androidsupportv4preferencefragmentmaster'
 include ':bladeReminder'

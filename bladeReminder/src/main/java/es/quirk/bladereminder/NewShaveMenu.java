@@ -7,27 +7,27 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import es.quirk.bladereminder.fragments.ShaveFragment;
+import es.quirk.bladereminder.fragments.ShaveListFragment;
 import es.quirk.bladereminder.widgets.TextDrawable;
 import es.quirk.bladereminder.widgets.TextDrawableFactory;
 import timber.log.Timber;
 
 public final class NewShaveMenu implements ActionMode.Callback {
-	private final ShaveFragment mShaveFragment;
+	private final ShaveListFragment mShaveListFragment;
 
-	public NewShaveMenu(ShaveFragment shaveFragment) {
-		mShaveFragment = shaveFragment;
+	public NewShaveMenu(ShaveListFragment shaveListFragment) {
+		mShaveListFragment = shaveListFragment;
 	}
 
 	@Override
 	public boolean onActionItemClicked(@NonNull ActionMode mode, @NonNull MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_item_one_more:
-				mShaveFragment.doOneMore();
+				mShaveListFragment.doOneMore();
 				mode.finish();
 				return true;
 			case R.id.menu_item_new:
-				mShaveFragment.doNew();
+				mShaveListFragment.doNew();
 				mode.finish();
 				return true;
 			default:
@@ -41,7 +41,7 @@ public final class NewShaveMenu implements ActionMode.Callback {
 		Timber.d("onCreateActionMode called! This is gonna break stuff..");
 		MenuInflater inflater = mode.getMenuInflater();
 		inflater.inflate(R.menu.contextual, menu);
-		Context context = mShaveFragment
+		Context context = mShaveListFragment
 				.getActivity()
 				.getApplicationContext();
 		TextDrawable drawableRazor = TextDrawableFactory.createIcon(context, TextDrawableFactory.RAZOR);
@@ -53,7 +53,7 @@ public final class NewShaveMenu implements ActionMode.Callback {
 
 	@Override
 	public void onDestroyActionMode(ActionMode mode) {
-		mShaveFragment.onDestroyActionMode();
+		mShaveListFragment.onDestroyActionMode();
 	}
 
 	@Override

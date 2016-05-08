@@ -12,8 +12,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.google.common.collect.Range;
@@ -34,34 +34,52 @@ public class ReminderAppWidgetProvider extends AppWidgetProvider {
         int count;
     }
 
+    private class WidgetUpdateTask extends AsyncTask<Void, Void, Info> {
+
+        private final Context mContext;
+        private final AppWidgetManager mAppWidgetManager;
+        private final int[] mAppWidgetIds;
+
+        public WidgetUpdateTask(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager, @NonNull int[] appWidgetIds) {
+            mContext = context;
+            mAppWidgetManager = appWidgetManager;
+            mAppWidgetIds = appWidgetIds.clone();
+        }
+
+        @Override
+        protected Info doInBackground(Void... params) {
+            return getLatestInfo(mContext);
+        }
+
+        @Override
+        protected void onPostExecute(Info result) {
+            for (int appWidgetId : mAppWidgetIds) {
+                updateAppWidget(mContext, mAppWidgetManager, appWidgetId, result);
+            }
+        }
+    }
+
     @Override
     public void onUpdate(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager, @NonNull int[] appWidgetIds) {
-        Log.d(ReminderAppWidgetProvider.class.getName(), "onUpdate called");
         ShaveWatch.register(context);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         mColoursEnabled = Utils.setRangesFromPrefs(prefs, mRanges);
-        Info latest = getLatestInfo(context);
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId, latest);
-        }
+        new WidgetUpdateTask(context, appWidgetManager, appWidgetIds).execute();
     }
 
     @Override
     public void onEnabled(@NonNull Context context) {
         ShaveWatch.register(context);
-        Log.d(ReminderAppWidgetProvider.class.getName(), "onEnabled called for app widget");
     }
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
-        Log.d(ReminderAppWidgetProvider.class.getName(), "onReceive called");
         ShaveWatch.register(context);
         if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             ComponentName thisAppWidget = ShaveWatch.nameFromContext(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
             onUpdate(context, appWidgetManager, appWidgetIds);
-            Log.d(ReminderAppWidgetProvider.class.getName(), "working??");
         }
     }
 
@@ -72,7 +90,6 @@ public class ReminderAppWidgetProvider extends AppWidgetProvider {
 
     @NonNull
     private Info getLatestInfo(@NonNull Context context) {
-        Log.d(ReminderAppWidgetProvider.class.getName(), "getLatestInfo called");
         Uri uri = ShaveEntryContentProvider.CONTENT_URI;
         String[] projection = { Shaves.DATE, Shaves.COUNT };
         String selection = Shaves.COUNT + " > 0";

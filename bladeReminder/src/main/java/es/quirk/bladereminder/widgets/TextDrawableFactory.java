@@ -16,17 +16,23 @@ public final class TextDrawableFactory {
 	private static String getIconUtfChars(@NonNull String icon) {
 		int res = 0;
 		switch (icon) {
+			case "gmd-add":
+				res = 0xe145;
+				break;
 			case "gmd-delete":
-				res = 0xe620;
+				res = 0xe872;
 				break;
 			case "gmd-help":
-				res = 0xe633;
+				res = 0xe887;
 				break;
 			case "gmd-file-upload":
-				res = 0xe7b2;
+				res = 0xe2c6;
 				break;
 			case "gmd-edit":
-				res = 0xe809;
+				res = 0xe3c9;
+				break;
+			case "gmd-settings":
+				res = 0xe8b8;
 				break;
 			default:
 				break;

@@ -36,6 +36,7 @@ public class ShaveEntryContentProvider extends ContentProvider {
 		Shaves.DATE,
 		Shaves.COUNT,
 		Shaves.COMMENT,
+		Shaves.RAZOR,
 	};
 
 	private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);

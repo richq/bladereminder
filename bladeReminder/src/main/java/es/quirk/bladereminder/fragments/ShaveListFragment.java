@@ -18,6 +18,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -28,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -37,9 +39,10 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemClick;
+import butterknife.Unbinder;
 import es.quirk.bladereminder.EditShaveMenu;
 import es.quirk.bladereminder.FabIconUpdater;
 import es.quirk.bladereminder.NewShaveMenu;
@@ -60,19 +63,22 @@ import timber.log.Timber;
 /**
  * Fragment that holds the main list and floating action button.
  */
-public class ShaveFragment extends Fragment
+public class ShaveListFragment extends Fragment
         implements OnScrollListener,
         INotesEditorListener,
+        IAddRazorListener,
         LoaderCallbacks<Cursor> {
 
+        public final static String ARG_RAZOR = "razor";
+
         private final static int LIST_THRESHOLD = 2;
-        private final static String[] PROJECTION = { Shaves._ID, Shaves.DATE, Shaves.COUNT, Shaves.COMMENT };
+        private final static String[] PROJECTION = { Shaves._ID, Shaves.DATE, Shaves.COUNT, Shaves.COMMENT, Shaves.RAZOR };
         private static final int DIALOG_FRAGMENT = 1;
         private int mListViewLastCount;
         private View mHeaderView;
-        @Bind(R.id.shaveList) ListView mListView;
-        @Bind(R.id.action_button) FloatingActionButton mFAB;
-        @Bind(R.id.coordinator_layout) CoordinatorLayout mCoordLayout;
+        @BindView(R.id.shaveList) ListView mListView;
+        @BindView(R.id.action_button) FloatingActionButton mFAB;
+        @BindView(R.id.coordinator_layout) CoordinatorLayout mCoordLayout;
         private int mPreviousVisibleItem;
         private final View [] mColumnHeaders = new View[3];
         @Nullable
@@ -87,6 +93,9 @@ public class ShaveFragment extends Fragment
         private SoundHelper mSoundHelper;
         private SharedPreferences mPrefs;
         private View mRootView;
+        private int mRazorId;
+        private Unbinder mUnbinder;
+        FragmentStatePagerAdapter mPagerAdapter;
 
         private void backfill() {
                 new BackFiller(getActivity().getContentResolver()).execute();
@@ -95,8 +104,8 @@ public class ShaveFragment extends Fragment
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                         Bundle savedInstanceState) {
-                View rootView = inflater.inflate(R.layout.fragment_blade_reminder, container, false);
-                ButterKnife.bind(this, rootView);
+                View rootView = inflater.inflate(R.layout.fragment_shave_list, container, false);
+                mUnbinder = ButterKnife.bind(this, rootView);
                 mRootView = rootView;
                 mHeaderView = inflater.inflate(R.layout.view_list_item_header, mListView, false);
                 mColumnHeaders[0] = ButterKnife.findById(mHeaderView, R.id.column_header1);
@@ -106,6 +115,9 @@ public class ShaveFragment extends Fragment
                 mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
                 updateFabIcon();
                 FabIconUpdater.register(this);
+                Bundle args = getArguments();
+                mDataSource = new DataSource(rootView.getContext());
+                mRazorId = mDataSource.getRazorId(args.getInt(ARG_RAZOR));
 
                 mFAB.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -114,17 +126,45 @@ public class ShaveFragment extends Fragment
                         }
                 });
 
-                mDataSource = new DataSource(rootView.getContext());
-                String[] columns = new String[] { Shaves.DATE, Shaves.COUNT, Shaves.COMMENT};
+                String[] columns = new String[] { Shaves.DATE, Shaves.COUNT, Shaves.COMMENT, Shaves.RAZOR};
                 // Fields on the UI to which we map
                 int[] layoutIds = new int[] {
                         R.id.date_label,
                         R.id.count_label,
                         R.id.comment,
+                        R.id.razor,
                 };
                 getLoaderManager().initLoader(0, null, this);
                 mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.shaveentry, null, columns,
-                                        layoutIds, 0);
+                                        layoutIds, 0) {
+                        @Override
+                        public void bindView(View view, Context context, Cursor cursor) {
+                                super.bindView(view, context, cursor);
+                                String countStr = cursor.getString(2);
+                                String razorStr = cursor.getString(4);
+                                view.setEnabled(true);
+
+                                if (!(view instanceof LinearLayout))
+                                        return;
+                                LinearLayout layout = (LinearLayout) view;
+                                for (int i = 0; i < layout.getChildCount(); i++) {
+                                        View child = layout.getChildAt(i);
+                                        child.setEnabled(true);
+                                }
+                                try {
+                                        int count = Integer.parseInt(countStr);
+                                        int razorId = Integer.parseInt(razorStr);
+                                        if (count > 0 && razorId != mRazorId) {
+                                                Timber.d(" view.setBackgroundColor WHITE! %s", view.toString());
+                                                for (int i = 0; i < layout.getChildCount(); i++) {
+                                                        View child = layout.getChildAt(i);
+                                                        child.setEnabled(false);
+                                                }
+                                        }
+                                } catch (NumberFormatException ex) {
+                                }
+                        }
+                };
                 mListView.setAdapter(mAdapter);
                 mListView.setOnScrollListener(this);
                 backfill();
@@ -136,7 +176,7 @@ public class ShaveFragment extends Fragment
         @Override
         public void onDestroyView() {
                 super.onDestroyView();
-                ButterKnife.unbind(this);
+                mUnbinder.unbind();
                 FabIconUpdater.unregister();
         }
 
@@ -147,30 +187,42 @@ public class ShaveFragment extends Fragment
                 backfill();
         }
 
-        public void updateFabIcon() {
-                String iconType = TextDrawableFactory.BLADE;
-                Cursor cursor = getActivity().getContentResolver().query(
-                                ShaveEntryContentProvider.CONTENT_URI,
-                                PROJECTION, null, null, Shaves.DATE_DESC);
-                Optional<ShaveEntry> shaveEntry = Optional.fromNullable(cursorToEntry(cursor));
-                if (shaveEntry.isPresent()) {
-                        ShaveEntry selected = shaveEntry.get();
-                        mClickedItem = (int) selected.getID();
-                        int prev = getPreviousCount(selected.getDate());
-                        if (selected.getCount() > 0)
-                                iconType = "gmd-edit";
-                        else if (prev > 0)
-                                iconType = TextDrawableFactory.RAZOR;
-                }
-                final String iconType2 = iconType;
-                getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                                TextDrawable icon = TextDrawableFactory.createIcon(mRootView.getContext(), iconType2);
-                                icon.setTextColor(Utils.LIGHT_TEXT);
-                                mFAB.setImageDrawable(icon);
+        private class FabIconUpdateTask extends AsyncTask<Void, Void, String> {
+
+                @Override
+                protected String doInBackground(Void... params) {
+                        String iconType = TextDrawableFactory.BLADE;
+                        Cursor cursor = getActivity().getContentResolver().query(
+                                        ShaveEntryContentProvider.CONTENT_URI,
+                                        PROJECTION, null, null, Shaves.DATE_DESC);
+                        Optional<ShaveEntry> shaveEntry = Optional.fromNullable(cursorToEntry(cursor));
+                        if (shaveEntry.isPresent()) {
+                                ShaveEntry selected = shaveEntry.get();
+                                mClickedItem = (int) selected.getID();
+                                int prev = getPreviousCount(selected.getDate());
+                                if (selected.getCount() > 0)
+                                        iconType = "gmd-edit";
+                                else if (prev > 0)
+                                        iconType = TextDrawableFactory.RAZOR;
                         }
-                });
+                        return iconType;
+                }
+
+                @Override
+                protected void onPostExecute(final String iconType) {
+                        getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                        TextDrawable icon = TextDrawableFactory.createIcon(mRootView.getContext(), iconType);
+                                        icon.setTextColor(Utils.LIGHT_TEXT);
+                                        mFAB.setImageDrawable(icon);
+                                }
+                        });
+                }
+        }
+
+        public void updateFabIcon() {
+                new FabIconUpdateTask().execute();
         }
 
         private class NewEntryChecker extends AsyncTask<Void, Void, Integer> {
@@ -212,26 +264,37 @@ public class ShaveFragment extends Fragment
                 return entry;
         }
 
+        private class ItemClickTask extends AsyncTask<Void, Void, Optional<ShaveEntry>> {
+                @Override
+                protected Optional<ShaveEntry> doInBackground(Void... params) {
+                        return getItemAtPosition(mClickedItem);
+                }
+
+                @Override
+                protected void onPostExecute(Optional<ShaveEntry> maybeSelected) {
+                        if (!maybeSelected.isPresent())
+                                return;
+
+                        ShaveEntry selected = maybeSelected.get();
+                        Timber.d(" ___ selected.getCount() == %s", selected.getCount());
+                        Timber.d(" ___ selected.getDate() == %s", selected.getDate());
+                        // make sure we don't show 2 confusing icons when nothing previously added
+                        if (selected.getCount() == 0) {
+                                // maybe call doNew, or call the showActionModeForEntry
+                                new NewEntryChecker(selected).execute();
+                        } else {
+                                showActionModeForEntry(selected);
+                        }
+                }
+        }
+
         @OnItemClick(R.id.shaveList)
         void onItemClick(long id) {
                 if (mActionMode.isPresent()) {
                         mActionMode.get().finish();
                 }
                 mClickedItem = (int) id;
-                Optional<ShaveEntry> maybeSelected = getItemAtPosition(mClickedItem);
-                if (!maybeSelected.isPresent())
-                        return;
-
-                ShaveEntry selected = maybeSelected.get();
-                Timber.d(" ___ selected.getCount() == %s", selected.getCount());
-                Timber.d(" ___ selected.getDate() == %s", selected.getDate());
-                // make sure we don't show 2 confusing icons when nothing previously added
-                if (selected.getCount() == 0) {
-                        // maybe call doNew, or call the showActionModeForEntry
-                        new NewEntryChecker(selected).execute();
-                } else {
-                        showActionModeForEntry(selected);
-                }
+                new ItemClickTask().execute();
         }
 
         private void heroaction() {
@@ -265,9 +328,12 @@ public class ShaveFragment extends Fragment
         }
 
         private int getPreviousCount(@NonNull final String date) {
-                // "select count from shaves where date < ? order by date DESC LIMIT 1";
+                // "select count from shaves where date < ? and razor = [current] order by date DESC LIMIT 1";
                 String[] selectionArgs = new String[] { date };
-                String selection = Shaves.DATE + " < ? AND " + Shaves.COUNT + " > 0";
+                String selection = Shaves.DATE + " < ? AND " +
+                        Shaves.COUNT + " > 0 and (" +
+                        Shaves.RAZOR + " = " + mRazorId + " OR " +
+                        Shaves.RAZOR + " IS NULL)";
                 String[] countProjection = new String[] { Shaves.COUNT };
                 Cursor cursor = getActivity().getContentResolver().query(ShaveEntryContentProvider.CONTENT_URI,
                                 countProjection, selection, selectionArgs, Shaves.DATE_DESC);
@@ -301,6 +367,7 @@ public class ShaveFragment extends Fragment
                         Uri shaveId = Uri.parse(ShaveEntryContentProvider.CONTENT_URI + "/" + mPosition);
                         ContentValues values = new ContentValues();
                         values.put(Shaves.COUNT, lastCount + 1);
+                        values.put(Shaves.RAZOR, mRazorId);
                         getActivity().getContentResolver().update(shaveId, values, null, null);
 
                         // this next bit takes a while...
@@ -348,6 +415,7 @@ public class ShaveFragment extends Fragment
                         values.put(Shaves.DATE, entry.getDate());
                         values.put(Shaves.COUNT, entry.getCount());
                         values.put(Shaves.COMMENT, entry.getComment());
+                        values.put(Shaves.RAZOR, entry.getRazor());
                         Uri uri = Uri.parse(ShaveEntryContentProvider.CONTENT_URI + "/" + mIndex);
                         mContentResolver.update(uri, values, null, null);
                         return null;
@@ -355,25 +423,45 @@ public class ShaveFragment extends Fragment
 
         }
 
+        private class OneMoreOrNewTask extends AsyncTask<Void, Void, Optional<ShaveEntry>> {
+
+                private final int mSoundResource;
+                private final int mIndex;
+
+                public OneMoreOrNewTask(int soundResource, int index) {
+                        mSoundResource = soundResource;
+                        mIndex = index;
+                }
+
+                @Override
+                protected Optional<ShaveEntry> doInBackground(Void... params) {
+                        return getItemAtPosition(mIndex);
+                }
+
+                @Override
+                protected void onPostExecute(Optional<ShaveEntry> maybeSelected) {
+                        if (!maybeSelected.isPresent())
+                                return;
+
+                        ShaveEntry selected = maybeSelected.get();
+                        if (selected.getCount() == 0) {
+                                mSoundHelper.playRawSound(mSoundResource);
+                                if (mSoundResource == R.raw.newping) {
+                                        ShaveEntry newentry = new ShaveEntry(selected.getID(), selected.getDate(),
+                                                        1, selected.getComment(), Integer.toString(mRazorId));
+                                        new SaveNew(mIndex, getActivity().getContentResolver()).execute(newentry);
+                                } else if (mSoundResource == R.raw.plusone) {
+                                        new OneMoreSetter(selected, mIndex).execute();
+                                }
+                                showEditDialog(mIndex);
+                        }
+                }
+        }
+
         private void doOneMoreOrNew(@RawRes int soundResource) {
                 if (mClickedItem == -1)
                         return;
-                Optional<ShaveEntry> maybeSelected = getItemAtPosition(mClickedItem);
-                if (!maybeSelected.isPresent())
-                        return;
-
-                ShaveEntry selected = maybeSelected.get();
-                if (selected.getCount() == 0) {
-                        mSoundHelper.playRawSound(soundResource);
-                        if (soundResource == R.raw.newping) {
-                                ShaveEntry newentry = new ShaveEntry(selected.getID(), selected.getDate(),
-                                                1, selected.getComment());
-                                new SaveNew(mClickedItem, getActivity().getContentResolver()).execute(newentry);
-                        } else if (soundResource == R.raw.plusone) {
-                                new OneMoreSetter(selected, mClickedItem).execute();
-                        }
-                        showEditDialog(mClickedItem);
-                }
+                new OneMoreOrNewTask(soundResource, mClickedItem).execute();
         }
 
         public void doOneMore() {
@@ -399,27 +487,42 @@ public class ShaveFragment extends Fragment
 
         }
 
+        private class DoDeleterTask extends AsyncTask<Void, Void, Optional<ShaveEntry>> {
+                private final int mIndex;
+                public DoDeleterTask(int index) {
+                        mIndex = index;
+                }
+                @Override
+                protected Optional<ShaveEntry> doInBackground(Void... params) {
+                        return getItemAtPosition(mIndex);
+                }
+
+                @Override
+                protected void onPostExecute(Optional<ShaveEntry> maybeSelected) {
+                        if (!maybeSelected.isPresent())
+                                return;
+
+                        final ShaveEntry selected = maybeSelected.get();
+                        final int lastDeletedPosition = mIndex;
+                        Timber.d("mCurrentPage = %s", mCoordLayout.toString());
+                        Snackbar.make(mCoordLayout, R.string.deleted, Snackbar.LENGTH_LONG)
+                                .setAction(R.string.undo, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                                doUndo(selected, lastDeletedPosition);
+                                        }
+                                })
+                        .show();
+
+                        mSoundHelper.playRawSound(R.raw.delete);
+                        new Deleter().execute(selected);
+                }
+        }
+
         public void doDelete() {
                 if (mClickedItem == -1)
                         return;
-                Optional<ShaveEntry> maybeSelected = getItemAtPosition(mClickedItem);
-                if (!maybeSelected.isPresent())
-                        return;
-
-                final ShaveEntry selected = maybeSelected.get();
-                final int lastDeletedPosition = mClickedItem;
-                Timber.d("mCurrentPage = %s", mCoordLayout.toString());
-                Snackbar.make(mCoordLayout, R.string.deleted, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.undo, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                        doUndo(selected, lastDeletedPosition);
-                                }
-                        })
-                        .show();
-
-                mSoundHelper.playRawSound(R.raw.delete);
-                new Deleter().execute(selected);
+                new DoDeleterTask(mClickedItem).execute();
         }
 
         public void doEdit() {
@@ -491,13 +594,66 @@ public class ShaveFragment extends Fragment
                 }
         }
 
+        public void setPagerAdapter(FragmentStatePagerAdapter adapter) {
+                mPagerAdapter = adapter;
+        }
+
+        private class AddRazorTask extends AsyncTask<String, Void, Void> {
+                @Override
+                protected Void doInBackground(String... params) {
+                        mDataSource.addRazor(params[0]);
+                        return null;
+                }
+                @Override
+                protected void onPostExecute(Void result) {
+                        if (mPagerAdapter != null) {
+                                mPagerAdapter.notifyDataSetChanged();
+                        }
+                }
+        }
+
+        private class EditRazorTask extends AsyncTask<String, Void, Boolean> {
+                @Override
+                protected Boolean doInBackground(String... params) {
+                        mDataSource.editRazor(params[0], params[1]);
+                        return Boolean.TRUE;
+                }
+                @Override
+                protected void onPostExecute(Boolean result) {
+                        if (result && mPagerAdapter != null) {
+                                mPagerAdapter.notifyDataSetChanged();
+                        }
+                }
+        }
+
+        @Override
+	public void onAddRazor(final String name) {
+                if (name.isEmpty()) {
+                        return;
+                }
+                new AddRazorTask().execute(name);
+        }
+
+        @Override
+	public void onEditRazor(int position, final String name) {
+                if (name.isEmpty()) {
+                        return;
+                }
+                new EditRazorTask().execute(Integer.toString(position), name);
+        }
+
         @Override
         public void onNotesEdit(int position, String newComment) {
                 // no longer has race condition #1
-                ContentValues values = new ContentValues();
+                final ContentValues values = new ContentValues();
                 values.put(Shaves.COMMENT, newComment);
-                Uri uri = Uri.parse(ShaveEntryContentProvider.CONTENT_URI + "/" + position);
-                getActivity().getContentResolver().update(uri, values, null, null);
+                final Uri uri = Uri.parse(ShaveEntryContentProvider.CONTENT_URI + "/" + position);
+		(new Thread() {
+			@Override
+			public void run() {
+                                getActivity().getContentResolver().update(uri, values, null, null);
+			}
+		}).start();
         }
 
         // creates a new loader after the initLoader() call

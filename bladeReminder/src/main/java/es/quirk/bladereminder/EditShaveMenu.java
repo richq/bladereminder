@@ -7,26 +7,26 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import es.quirk.bladereminder.fragments.ShaveFragment;
+import es.quirk.bladereminder.fragments.ShaveListFragment;
 import es.quirk.bladereminder.widgets.TextDrawable;
 import es.quirk.bladereminder.widgets.TextDrawableFactory;
 
 public final class EditShaveMenu implements ActionMode.Callback {
-	private final ShaveFragment mShaveFragment;
+	private final ShaveListFragment mShaveListFragment;
 
-	public EditShaveMenu(ShaveFragment shaveFragment) {
-		mShaveFragment = shaveFragment;
+	public EditShaveMenu(ShaveListFragment shaveListFragment) {
+		mShaveListFragment = shaveListFragment;
 	}
 
 	@Override
 	public boolean onActionItemClicked(@NonNull ActionMode mode, @NonNull MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_item_edit:
-				mShaveFragment.doEdit();
+				mShaveListFragment.doEdit();
 				mode.finish();
 				return true;
 			case R.id.menu_item_delete:
-				mShaveFragment.doDelete();
+				mShaveListFragment.doDelete();
 				mode.finish();
 				return true;
 			default:
@@ -39,7 +39,7 @@ public final class EditShaveMenu implements ActionMode.Callback {
 	public boolean onCreateActionMode(@NonNull ActionMode mode, @NonNull Menu menu) {
 		MenuInflater inflater = mode.getMenuInflater();
 		inflater.inflate(R.menu.editentry, menu);
-		Context context = mShaveFragment
+		Context context = mShaveListFragment
 				.getActivity()
 				.getApplicationContext();
 		TextDrawable editIcon = TextDrawableFactory.createIcon(context, "gmd-edit");
@@ -51,7 +51,7 @@ public final class EditShaveMenu implements ActionMode.Callback {
 
 	@Override
 	public void onDestroyActionMode(ActionMode mode) {
-		mShaveFragment.onDestroyActionMode();
+		mShaveListFragment.onDestroyActionMode();
 	}
 
 	@Override

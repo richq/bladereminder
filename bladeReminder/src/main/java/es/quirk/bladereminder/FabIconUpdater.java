@@ -7,17 +7,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import es.quirk.bladereminder.contentprovider.ShaveEntryContentProvider;
-import es.quirk.bladereminder.fragments.ShaveFragment;
+import es.quirk.bladereminder.fragments.ShaveListFragment;
 import timber.log.Timber;
 
 public final class FabIconUpdater extends ContentObserver {
 
-	private final ShaveFragment mFragment;
+	private final ShaveListFragment mFragment;
 	private final Handler mHandler;
 	@Nullable
 	private static FabIconUpdater sContentObserver;
 
-	private FabIconUpdater(ShaveFragment f, Handler h) {
+	private FabIconUpdater(ShaveListFragment f, Handler h) {
 		super(h);
 		mFragment = f;
 		mHandler = h;
@@ -30,7 +30,7 @@ public final class FabIconUpdater extends ContentObserver {
 		return new Handler(thread.getLooper());
 	}
 
-	public synchronized static void register(@NonNull ShaveFragment frag) {
+	public synchronized static void register(@NonNull ShaveListFragment frag) {
 		Timber.d("newInstance called in FabIconUpdater");
 		if (sContentObserver == null) {
 			sContentObserver = new FabIconUpdater(frag, getBackgroundThread());

@@ -4,13 +4,13 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.widget.Button;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import es.quirk.bladereminder.R;
 
 public class HelpActivity extends BaseActivity {
 
-	@Bind(R.id.end_help) Button mEndHelp;
+	@BindView(R.id.end_help) Button mEndHelp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

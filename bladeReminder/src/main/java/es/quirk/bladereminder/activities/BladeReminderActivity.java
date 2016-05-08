@@ -11,8 +11,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,24 +27,31 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import es.quirk.bladereminder.R;
-import es.quirk.bladereminder.fragments.ShaveFragment;
+import es.quirk.bladereminder.RazorUndoAction;
+import es.quirk.bladereminder.fragments.AddRazorDialog;
 import es.quirk.bladereminder.Utils;
+import es.quirk.bladereminder.ShavePagerAdapter;
 import es.quirk.bladereminder.database.DataSource;
 import es.quirk.bladereminder.fragments.StatisticsFragment;
 import es.quirk.bladereminder.tasks.RemoveShareTask;
 import es.quirk.bladereminder.tasks.StartLoggerTask;
-import es.quirk.bladereminder.widgets.TextDrawable;
 import es.quirk.bladereminder.widgets.TextDrawableFactory;
 import timber.log.Timber;
 
-public class BladeReminderActivity extends BaseActivity  {
+public class BladeReminderActivity extends BaseActivity implements ShavePagerAdapter.IRazorCountChangeListener {
 
     private final static String SHARE_TYPE = "text/csv";
-    @Bind(R.id.progressBar1) ProgressBar mProgressBar;
+    @BindView(R.id.progressBar1) ProgressBar mProgressBar;
+    @BindView(R.id.pager) ViewPager mViewPager;
+    @BindView(R.id.coordinator_layout) CoordinatorLayout mCoordLayout;
 
+    private static final int DIALOG_FRAGMENT = 1;
+    private MenuItem mDeleteRazorMenuItem;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,11 +60,16 @@ public class BladeReminderActivity extends BaseActivity  {
         setContentView(R.layout.activity_blade_reminder);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         mProgressBar.setVisibility(View.GONE);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new ShaveFragment(), "shave_fragment")
-                    .commit();
-        }
+        ShavePagerAdapter spa = new ShavePagerAdapter(getSupportFragmentManager(), this);
+        mViewPager.setAdapter(spa);
+        notifyRazorCountChange(spa.getCount());
+    }
+
+    @Override
+    protected void onResume() {
+        if (mViewPager != null)
+            mViewPager.getAdapter().notifyDataSetChanged();
+        super.onResume();
     }
 
     @SuppressWarnings("deprecation")
@@ -78,16 +95,20 @@ public class BladeReminderActivity extends BaseActivity  {
         shareIntent.setType(SHARE_TYPE);
         MenuItem menuItem = menu.findItem(R.id.action_share);
         Context context = getApplicationContext();
-        TextDrawable drawableUpload = TextDrawableFactory.createIcon(context, "gmd-file-upload");
-        TextDrawable drawableHelp = TextDrawableFactory.createIcon(context, "gmd-help");
         if (menuItem != null) {
-            menuItem.setIcon(drawableUpload);
+            menuItem.setIcon(TextDrawableFactory.createIcon(context, "gmd-file-upload"));
             new RemoveShareTask(context, shareIntent, menuItem).execute();
         }
-        menuItem = menu.findItem(R.id.action_help);
-        menuItem.setIcon(drawableHelp);
+
+        menu.findItem(R.id.action_help).setIcon(TextDrawableFactory.createIcon(context, "gmd-help"));
+        menu.findItem(R.id.action_new_razor).setIcon(TextDrawableFactory.createIcon(context, "gmd-add"));
+        menu.findItem(R.id.action_delete_razor).setIcon(TextDrawableFactory.createIcon(context, "gmd-delete"));
+        menu.findItem(R.id.action_modify_razor).setIcon(TextDrawableFactory.createIcon(context, "gmd-edit"));
+        menu.findItem(R.id.action_settings).setIcon(TextDrawableFactory.createIcon(context, "gmd-settings"));
 
         removeStatsEntry(menu);
+        mDeleteRazorMenuItem = menu.findItem(R.id.action_delete_razor);
+        mDeleteRazorMenuItem.setVisible(mViewPager.getAdapter().getCount() > 1);
 
         return true;
     }
@@ -95,7 +116,7 @@ public class BladeReminderActivity extends BaseActivity  {
     @NonNull
     private static FileOutputStream lessBrokenOpenFileOutput(@NonNull Context context, @NonNull String path) throws IOException {
         File file = new File(context.getFilesDir(), path);
-        Timber.d("mkdir " + file.getParentFile());
+        Timber.d("mkdir %s", file.getParentFile().toString());
         Utils.mkdirp(file.getParentFile());
         if (!file.exists() && !file.createNewFile()) {
             throw new IOException(context.getString(R.string.unable_to_create_file));
@@ -182,11 +203,55 @@ public class BladeReminderActivity extends BaseActivity  {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.setCustomAnimations(android.R.anim.fade_in,
                     android.R.anim.fade_out);
-            transaction.replace(R.id.container, statisticsFragment);
+            transaction.replace(R.id.pager, statisticsFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+        } else if (id == R.id.action_new_razor) {
+            // show a dialog where you give the razor a new name
+            showAddRazorDialog(true);
+        } else if (id == R.id.action_modify_razor) {
+            // show a dialog where you give the razor a new name
+            showAddRazorDialog(false);
+        } else if (id == R.id.action_delete_razor) {
+            // delete current, with undo or whatevs
+            deleteRazor();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showAddRazorDialog(boolean isNew) {
+        ShavePagerAdapter spa = (ShavePagerAdapter) mViewPager.getAdapter();
+        int currentId = mViewPager.getCurrentItem();
+        String currentName = spa.getPageTitle(currentId).toString();
+        // view pages are 0 indexed, but razor DB indices start at 1
+        DataSource datasource = new DataSource(getApplicationContext());
+        List<String> razors = datasource.getRazors();
+        DialogFragment addRazorDialog = AddRazorDialog.newInstance(isNew ? -1 : currentId, currentName, razors);
+        Fragment page = spa.getFragment(currentId);
+        addRazorDialog.setTargetFragment(page, DIALOG_FRAGMENT);
+        addRazorDialog.show(getSupportFragmentManager().beginTransaction(), "fragment_add_razor");
+    }
+
+    private void deleteRazor() {
+        // get the count for this razor...
+        final DataSource datasource = new DataSource(getApplicationContext());
+        // shouldn't happen, but just in case...
+        if (datasource.getRazors().size() == 1) {
+            return;
+        }
+        int currentId = mViewPager.getCurrentItem();
+        final RazorUndoAction undoAction = datasource.deleteRazor(currentId);
+        mViewPager.getAdapter().notifyDataSetChanged();
+        // delete it! :-S
+        Snackbar.make(mCoordLayout, R.string.deleted, Snackbar.LENGTH_INDEFINITE)
+            .setAction(R.string.undo, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    datasource.undoDelete(undoAction);
+                    mViewPager.getAdapter().notifyDataSetChanged();
+                }
+            })
+        .show();
     }
 
     private Uri getFileUri(@NonNull Context context) {
@@ -213,6 +278,15 @@ public class BladeReminderActivity extends BaseActivity  {
     public void stop() {
         //setProgressBarIndeterminateVisibility(false);
         mProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void notifyRazorCountChange(int newcount) {
+        // hide the tab if just one, or show it otherwise
+        ButterKnife.findById(this, R.id.pager_tab_strip).setVisibility(
+                newcount == 1 ? View.GONE : View.VISIBLE);
+        if (mDeleteRazorMenuItem != null)
+            mDeleteRazorMenuItem.setVisible(newcount > 1);
     }
 
 }

@@ -41,6 +41,7 @@
             android:orientation="horizontal" >
             <NumberPicker
                 android:id="@+id/shaveUsageText"
+                android:descendantFocusability="blocksDescendants"
                 android:gravity="center"
                 android:layout_weight="2"
                 android:layout_width="0dp"
@@ -82,6 +83,26 @@
 
             <requestFocus />
         </EditText>
+
+        <TextView
+            android:id="@+id/razorLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/razorLabel"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            />
+        <View
+            android:id="@+id/razorSepThing"
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="?attr/colorPrimary"
+            />
+        <NumberPicker
+            android:id="@+id/razorChoice"
+            android:descendantFocusability="blocksDescendants"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
 
     </LinearLayout>
         <View

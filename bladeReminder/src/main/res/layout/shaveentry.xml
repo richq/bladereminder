@@ -40,4 +40,11 @@
         android:paddingBottom="2dp"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    <TextView
+        android:id="@+id/razor"
+        android:visibility="gone"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_weight="0" />
+
 </LinearLayout>

@@ -13,7 +13,7 @@ import android.widget.ProgressBar;
 import java.io.IOException;
 import java.io.InputStream;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import es.quirk.bladereminder.R;
 import es.quirk.bladereminder.contentprovider.ShaveEntryContentProvider;
@@ -22,7 +22,7 @@ import timber.log.Timber;
 
 public class ImportActivity extends BaseActivity {
 
-    @Bind(R.id.progressBar1) ProgressBar mProgressBar;
+    @BindView(R.id.progressBar1) ProgressBar mProgressBar;
 
     private class DoImport extends AsyncTask<Uri, Void, Boolean> {
 

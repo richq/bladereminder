@@ -2,9 +2,25 @@
 
 # Compiling
 
-Use gradle from Android Studio e.g. `android-studio/gradle/gradle-2.2.1/bin/gradle`, then run:
+Use gradle from Android Studio e.g. `android-studio/gradle/gradle-2.10/bin/gradle`, then run:
 
     gradle assembleDebug
+
+# CSV file format
+
+The app can export or import the data it stores in a plain text file with each entry
+consisting of up to 4 comma separated fields.
+
+    Date, Count, Comment, Razor
+
+* **Date** - the date of the entry in yyyy-MM-dd format, e.g. 2016-05-29
+* **Count** - an integer representing the number of uses to date, e.g. 3
+* **Comment** - free-form text field, write what you like here
+* **Razor** [optional] - the name of the razor used, e.g. Ikon 102
+
+The razor field does not have to be present, so if you just have one razor you
+use daily you can ignore it. If you have a couple of razors that you alternate
+between then this makes it easier to keep track of those.
 
 # Updating translations
 
@@ -19,12 +35,6 @@ Then modify the po files with the translations. Afterwards, push the changes int
     a2po import --android bladeReminder/src/main/res/ --gettext locale
 
 This will update res/values-es/strings.xml etc with the translated strings.
-
-# Dependencies
-
-As well as the declared dependencies in build.gradle, the following is copied in the source tree:
-
-* [Preference Fragment](https://github.com/kolavar/android-support-v4-preferencefragment)
 
 ## Build failure in packageRelease
 

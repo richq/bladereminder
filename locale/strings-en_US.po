@@ -1,23 +1,22 @@
-# U.S. English translations for PROJECT.
-# Copyright (C) 2014 ORGANIZATION
+# English (United States) translations for PROJECT.
+# Copyright (C) 2016 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-11-10 20:38+0100\n"
+"POT-Creation-Date: 2016-05-01 16:46+0200\n"
 "PO-Revision-Date: 2014-10-13 10:53+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: en_US\n"
 "Language-Team: en_US <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=((n == 1) ? 0 : 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.1.1\n"
+"Generated-By: Babel 1.0dev\n"
 
 msgctxt "about"
 msgid "About"
@@ -146,8 +145,8 @@ msgstr ""
 msgctxt "import_text_help"
 msgid ""
 "You can import data from a file containing comma separated values. These "
-"should be the date, the shave count and any comments. I'll try to do my "
-"best to resolve conflicts."
+"should be the date, the shave count, any comments and optionally the name"
+" of the razor used. I'll try to do my best to resolve conflicts."
 msgstr ""
 
 msgctxt "light"
@@ -278,5 +277,47 @@ msgstr ""
 
 msgctxt "not_enough_entries"
 msgid "Not enough entries yet"
+msgstr ""
+
+msgctxt "action_new_razor"
+msgid "Add Razor"
+msgstr ""
+
+msgctxt "action_modify_razor"
+msgid "Edit Razor Name"
+msgstr ""
+
+msgctxt "action_delete_razor"
+msgid "Delete Razor"
+msgstr ""
+
+msgctxt "add_razor_dlg_title"
+msgid "Add a new razor"
+msgstr ""
+
+msgctxt "add_razor_dlg_message"
+msgid ""
+"Give the razor a nick name to make keeping track of multiple razors a bit"
+" easier"
+msgstr ""
+
+msgctxt "add_razor_dlg_ok"
+msgid "Add this razor"
+msgstr ""
+
+msgctxt "edit_razor_dlg_title"
+msgid "Change razor name"
+msgstr ""
+
+msgctxt "edit_razor_dlg_message"
+msgid "Change the name given to this razor"
+msgstr ""
+
+msgctxt "edit_razor_dlg_ok"
+msgid "Save the change"
+msgstr ""
+
+msgctxt "razorLabel"
+msgid "Razor Used"
 msgstr ""
 

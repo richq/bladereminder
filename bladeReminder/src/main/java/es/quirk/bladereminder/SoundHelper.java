@@ -1,5 +1,6 @@
 package es.quirk.bladereminder;
 
+import android.os.AsyncTask;
 import android.util.SparseBooleanArray;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,17 +12,29 @@ import android.support.annotation.RawRes;
 import android.util.SparseIntArray;
 
 public class SoundHelper implements OnLoadCompleteListener {
-	private final SoundPool mSoundPool = VersionedSoundPoolBuilder.newInstance().createSoundPool();
+	private SoundPool mSoundPool;
 	private final SparseIntArray mResourceIdToSoundIdMap = new SparseIntArray();
 	private final SparseBooleanArray mLoaded = new SparseBooleanArray();
 	private final Context mContext;
 
+	private class FabIconUpdateTask extends AsyncTask<Void, Void, Void> {
+		@Override
+		protected Void doInBackground(Void... params) {
+			mSoundPool = VersionedSoundPoolBuilder.newInstance().createSoundPool();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			mSoundPool.setOnLoadCompleteListener(SoundHelper.this);
+			loadSound(R.raw.delete);
+			loadSound(R.raw.newping);
+			loadSound(R.raw.plusone);
+		}
+	}
+
 	public SoundHelper(Context context) {
 		mContext = context;
-		mSoundPool.setOnLoadCompleteListener(this);
-		loadSound(R.raw.delete);
-		loadSound(R.raw.newping);
-		loadSound(R.raw.plusone);
 	}
 
 	private void loadSound(@RawRes int identifier) {

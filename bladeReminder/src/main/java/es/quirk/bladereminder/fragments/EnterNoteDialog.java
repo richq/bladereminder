@@ -16,17 +16,19 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import butterknife.Unbinder;
 import es.quirk.bladereminder.R;
 
 public class EnterNoteDialog extends DialogFragment {
 
-    @Bind(R.id.txt_your_note) EditText mEditText;
-    @Bind(R.id.do_not_show_checkbox) CheckBox mDontShow;
+    @BindView(R.id.txt_your_note) EditText mEditText;
+    @BindView(R.id.do_not_show_checkbox) CheckBox mDontShow;
     private int mPosition;
+    private Unbinder mUnbinder;
     private static final String NO_COUNT = "nah_count";
 
     @NonNull
@@ -41,8 +43,8 @@ public class EnterNoteDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_insert_note, container);
-        ButterKnife.bind(this, view);
+        View view = inflater.inflate(R.layout.fragment_enter_note_dialog, container);
+        mUnbinder = ButterKnife.bind(this, view);
         getDialog().setTitle(R.string.add_comment_dlg_title);
         if (savedInstanceState != null)
             mPosition = savedInstanceState.getInt("position");
@@ -61,7 +63,7 @@ public class EnterNoteDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        mUnbinder.unbind();
     }
 
     @OnCheckedChanged(R.id.do_not_show_checkbox)

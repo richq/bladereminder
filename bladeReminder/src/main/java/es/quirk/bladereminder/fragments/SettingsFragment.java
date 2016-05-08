@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.Preference;
 import android.support.annotation.NonNull;
 import android.support.annotation.RawRes;
 import android.support.annotation.StringRes;
-import android.support.v4.preference.PreferenceFragment;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.preference.EditTextPreference;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
 import android.webkit.WebView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialog;
@@ -28,13 +29,13 @@ import es.quirk.bladereminder.Utils;
 import timber.log.Timber;
 import es.quirk.bladereminder.widgets.RangePreference;
 
-public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
+public class SettingsFragment extends PreferenceFragmentCompat implements OnSharedPreferenceChangeListener {
 
 	private Context mContext;
+	private static final String ARG_PREFERENCE_DIALOG = "android.support.v7.preference.PreferenceFragmentCompat.DIALOG";
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	public void onCreatePreferences(Bundle savedInstanceState, String key) {
 		addPreferencesFromResource(R.xml.preferences);
 		findPreference("about_button").setOnPreferenceClickListener(
 				new Preference.OnPreferenceClickListener() {
@@ -57,6 +58,18 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		updateDateFormatSummary(sp);
 		updateRangeSummary(sp);
 		sp.registerOnSharedPreferenceChangeListener(this);
+	}
+
+	@Override
+	public void onDisplayPreferenceDialog(Preference preference) {
+		if (preference instanceof RangePreference) {
+			DialogFragment fragment;
+			fragment = RangePreference.RangePreferenceDialogFragmentCompat.newInstance((RangePreference)preference);
+			fragment.setTargetFragment(this, 0);
+			fragment.show(getFragmentManager(), ARG_PREFERENCE_DIALOG);
+		} else {
+			super.onDisplayPreferenceDialog(preference);
+		}
 	}
 
 	private void updateRangeSummary(@NonNull SharedPreferences sp) {

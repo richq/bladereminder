@@ -30,7 +30,7 @@
   <string name="start_import">Importar</string>
   <string name="cancel_import">Cancelar</string>
   <string name="import_activity_name">Importar datos externos</string>
-  <string name="import_text_help">Puedes importar datos desde un fichero con valores separados por comas. Los valores son la fecha, la cuenta de afeitados y un comentario. Resuelvo los conflictos lo mejor que pueda.</string>
+  <string name="import_text_help">Puedes importar datos desde un fichero con valores separados por comas. Los valores son la fecha, la cuenta de afeitados, un comentario y opcionalmente el nombre de la maquinilla usada. Intentaré resolver los conflictos lo mejor que puedo.</string>
   <string name="light">Clarito</string>
   <string name="modify_done">Ya está</string>
   <string name="modify_name">Editar los detalles del afeitado</string>
@@ -62,4 +62,14 @@
   <string name="stats_since">Estadísticas desde</string>
   <string name="never">Nunca</string>
   <string name="not_enough_entries">Todavía no hay bastantes entradas</string>
+  <string name="action_new_razor">Añadir maquinilla</string>
+  <string name="action_modify_razor">Cambiar el nombre de la maquinilla</string>
+  <string name="action_delete_razor">Borrar una maquinilla</string>
+  <string name="add_razor_dlg_title">Añadir una maquinilla nueva</string>
+  <string name="add_razor_dlg_message">Darle nombre a una maquinilla para que sea más fácil seguir cual has usado</string>
+  <string name="add_razor_dlg_ok">Añadir esta maquinilla</string>
+  <string name="edit_razor_dlg_title">Cambiar el nombre de una maquinilla</string>
+  <string name="edit_razor_dlg_message">Cambia el nombre que se había dado a esta maquinilla</string>
+  <string name="edit_razor_dlg_ok">Guardar los cambios</string>
+  <string name="razorLabel">Maquinilla utilizada</string>
 </resources>

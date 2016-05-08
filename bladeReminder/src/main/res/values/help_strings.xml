@@ -4,5 +4,9 @@
     <string name="help_second_1">Mark each day you\'ve used the blade to shave by choosing the day and tapping the razor icon on the menu.</string>
     <string name="help_modify">You can modify the comment for a day or change the recorded blade uses by tapping a shave-day and pressing the edit icon.</string>
     <string name="help_third">When you start a new blade, choose the day and tap the blade menu item.</string>
+
+    <string name="help_the_razors">If you have more than one razor that you use daily, you can add these using the options in the top menu.</string>
+    <string name="help_add_per_razor">Adding a shave will only add it to the currently selected razor. Shaves registered to another razor are shown slightly greyed out.</string>
+    <string name="help_razor_swipe">Change the current razor by swiping left and right.</string>
     <string name="got_it">Got it!</string>
 </resources>

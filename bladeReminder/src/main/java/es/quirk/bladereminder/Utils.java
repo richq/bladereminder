@@ -8,9 +8,9 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 
-import static butterknife.ButterKnife.Finder.listOf;
 import com.google.common.collect.Range;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +29,7 @@ public final class Utils {
 	// 54% of 255 = 138
 	public final static int DARK_TEXT = Color.argb(138, 0, 0, 0);
 	public final static int LIGHT_TEXT = Color.WHITE;
-	public final static List<String> COLOUR_PREFS = listOf(
+	public final static List<String> COLOUR_PREFS = Arrays.asList(
 		"purple_sharp",
 		"white_sharp",
 		"blue_sharp",

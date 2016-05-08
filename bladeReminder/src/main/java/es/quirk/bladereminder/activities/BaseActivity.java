@@ -10,14 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import es.quirk.bladereminder.R;
 import timber.log.Timber;
 
 @SuppressLint("Registered")
-public class BaseActivity extends AppCompatActivity implements OnSharedPreferenceChangeListener {
+public abstract class BaseActivity extends AppCompatActivity implements OnSharedPreferenceChangeListener {
 
-	@Bind(R.id.tool_bar) Toolbar mToolbar;
+	@BindView(R.id.tool_bar) Toolbar mToolbar;
 	private String mThemeSetting = "0";
 
 
