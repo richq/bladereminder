@@ -66,6 +66,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 			String template  = getString(R.string.sharpness_range_summary);
 			String [] minmax = currval.split(",");
 			rangePref.setSummary(String.format(template, minmax[0], minmax[1]));
+		} catch (IllegalStateException ex) {
+			Timber.e(ex, "Illegal state updating range!");
 		} catch (NullPointerException ex) {
 			Timber.e(ex, "Error updating range summary!");
 		}
