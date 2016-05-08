@@ -175,12 +175,11 @@ public class DataSource {
 			throw new IllegalArgumentException("No entries");
 		}
 		String newestDate = getNewestDate();
-		Date current;
+		Calendar currentDay = Calendar.getInstance();
 		try {
-			current = mDateFormat.parse(oldestDate);
+			currentDay.setTime(mDateFormat.parse(oldestDate));
 		} catch (ParseException ex) {
 			Timber.w(ex, "Unable to parse %s ", oldestDate);
-			current = Calendar.getInstance().getTime();
 		}
 		Writer fw = new OutputStreamWriter(outstream, Charsets.UTF_8);
 		CSVWriter writer = new CSVWriter(fw, ',');
@@ -190,7 +189,7 @@ public class DataSource {
 			if (!cursor.isAfterLast()) {
 				date = cursor.getString(1);
 			}
-			String thisDay = mDateFormat.format(current);
+			String thisDay = mDateFormat.format(currentDay.getTime());
 			String countStr = "-";
 			String comment = "";
 
@@ -209,7 +208,7 @@ public class DataSource {
 				break;
 			}
 			// move to next day
-			current.setTime(current.getTime() + Utils.ONE_DAY_MS);
+			currentDay.add(Calendar.DATE, 1);
 		}
 		writer.close();
 
