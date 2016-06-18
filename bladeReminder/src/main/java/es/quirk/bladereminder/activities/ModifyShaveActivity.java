@@ -109,7 +109,7 @@ public class ModifyShaveActivity extends BaseActivity implements OnValueChangeLi
 					String [] ra = new String[size];
 					mRazorChoice.setDisplayedValues(razors.toArray(ra));
 					try {
-						mRazorChoice.setValue(Integer.parseInt(originalEntry.getRazor()) - 1);
+						mRazorChoice.setValue(dataSource.getRazorPosition(Integer.parseInt(originalEntry.getRazor())));
 					} catch (NumberFormatException ex) {
 						// can't deal..
 						setRazorChoiceVisibility(View.GONE);

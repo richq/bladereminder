@@ -24,16 +24,18 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.view.ActionMode;
 import android.support.v7.view.ActionMode.Callback;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.google.common.base.Optional;
+
+import com.github.gist.ssins.EndlessRecyclerOnScrollListener;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -41,8 +43,10 @@ import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnItemClick;
 import butterknife.Unbinder;
+
+import timber.log.Timber;
+
 import es.quirk.bladereminder.EditShaveMenu;
 import es.quirk.bladereminder.FabIconUpdater;
 import es.quirk.bladereminder.NewShaveMenu;
@@ -51,20 +55,22 @@ import es.quirk.bladereminder.ShaveEntry;
 import es.quirk.bladereminder.SoundHelper;
 import es.quirk.bladereminder.Utils;
 import es.quirk.bladereminder.activities.BladeReminderActivity;
+import es.quirk.bladereminder.adapter.ShaveEntryAdapter;
 import es.quirk.bladereminder.contentprovider.ShaveEntryContentProvider;
 import es.quirk.bladereminder.database.Contract;
 import es.quirk.bladereminder.database.Contract.Shaves;
 import es.quirk.bladereminder.database.DataSource;
 import es.quirk.bladereminder.tasks.BackFiller;
+import es.quirk.bladereminder.widgets.DividerItemDecoration;
 import es.quirk.bladereminder.widgets.TextDrawable;
 import es.quirk.bladereminder.widgets.TextDrawableFactory;
-import timber.log.Timber;
 
 /**
  * Fragment that holds the main list and floating action button.
  */
 public class ShaveListFragment extends Fragment
-        implements OnScrollListener,
+        implements
+        ShaveEntryAdapter.IClickListener,
         INotesEditorListener,
         IAddRazorListener,
         LoaderCallbacks<Cursor> {
@@ -74,16 +80,12 @@ public class ShaveListFragment extends Fragment
         private final static int LIST_THRESHOLD = 2;
         private final static String[] PROJECTION = { Shaves._ID, Shaves.DATE, Shaves.COUNT, Shaves.COMMENT, Shaves.RAZOR };
         private static final int DIALOG_FRAGMENT = 1;
-        private int mListViewLastCount;
-        private View mHeaderView;
-        @BindView(R.id.shaveList) ListView mListView;
+        @BindView(R.id.shaveList) RecyclerView mRecyclerView;
         @BindView(R.id.action_button) FloatingActionButton mFAB;
         @BindView(R.id.coordinator_layout) CoordinatorLayout mCoordLayout;
-        private int mPreviousVisibleItem;
-        private final View [] mColumnHeaders = new View[3];
         @Nullable
         private BladeReminderActivity mMainActivity;
-        private SimpleCursorAdapter mAdapter;
+        private ShaveEntryAdapter mAdapter;
         private DataSource mDataSource;
         private final Callback mEditModeCallback = new NewShaveMenu(this);
         private final Callback mEditEntryCallback = new EditShaveMenu(this);
@@ -107,11 +109,6 @@ public class ShaveListFragment extends Fragment
                 View rootView = inflater.inflate(R.layout.fragment_shave_list, container, false);
                 mUnbinder = ButterKnife.bind(this, rootView);
                 mRootView = rootView;
-                mHeaderView = inflater.inflate(R.layout.view_list_item_header, mListView, false);
-                mColumnHeaders[0] = ButterKnife.findById(mHeaderView, R.id.column_header1);
-                mColumnHeaders[1] = ButterKnife.findById(mHeaderView, R.id.column_header2);
-                mColumnHeaders[2] = ButterKnife.findById(mHeaderView, R.id.column_header3);
-                mListView.addHeaderView(mHeaderView, null, false);
                 mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
                 updateFabIcon();
                 FabIconUpdater.register(this);
@@ -126,51 +123,36 @@ public class ShaveListFragment extends Fragment
                         }
                 });
 
-                String[] columns = new String[] { Shaves.DATE, Shaves.COUNT, Shaves.COMMENT, Shaves.RAZOR};
-                // Fields on the UI to which we map
-                int[] layoutIds = new int[] {
-                        R.id.date_label,
-                        R.id.count_label,
-                        R.id.comment,
-                        R.id.razor,
-                };
                 getLoaderManager().initLoader(0, null, this);
-                mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.shaveentry, null, columns,
-                                        layoutIds, 0) {
-                        @Override
-                        public void bindView(View view, Context context, Cursor cursor) {
-                                super.bindView(view, context, cursor);
-                                String countStr = cursor.getString(2);
-                                String razorStr = cursor.getString(4);
-                                view.setEnabled(true);
-
-                                if (!(view instanceof LinearLayout))
-                                        return;
-                                LinearLayout layout = (LinearLayout) view;
-                                for (int i = 0; i < layout.getChildCount(); i++) {
-                                        View child = layout.getChildAt(i);
-                                        child.setEnabled(true);
-                                }
-                                try {
-                                        int count = Integer.parseInt(countStr);
-                                        int razorId = Integer.parseInt(razorStr);
-                                        if (count > 0 && razorId != mRazorId) {
-                                                Timber.d(" view.setBackgroundColor WHITE! %s", view.toString());
-                                                for (int i = 0; i < layout.getChildCount(); i++) {
-                                                        View child = layout.getChildAt(i);
-                                                        child.setEnabled(false);
-                                                }
-                                        }
-                                } catch (NumberFormatException ex) {
-                                }
-                        }
-                };
-                mListView.setAdapter(mAdapter);
-                mListView.setOnScrollListener(this);
                 backfill();
                 mCurrentPage = 0;
                 mSoundHelper = new SoundHelper(rootView.getContext());
                 return rootView;
+        }
+
+        @Override
+        public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+                super.onViewCreated(view, savedInstanceState);
+                LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+                mRecyclerView.setLayoutManager(llm);
+                mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
+                mAdapter = new ShaveEntryAdapter(getActivity(), this);
+                mRecyclerView.setAdapter(mAdapter);
+                mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(llm) {
+                        @Override
+                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                                super.onScrolled(recyclerView, dx, dy);
+                                if (dy > 0)
+                                        mFAB.setVisibility(View.INVISIBLE);
+                                else
+                                        mFAB.setVisibility(View.VISIBLE);
+                        }
+                        @Override
+                        public void onLoadMore(int currentPage) {
+                                mCurrentPage = currentPage - 1;
+                                getLoaderManager().restartLoader(0, null, ShaveListFragment.this);
+                        }
+                });
         }
 
         @Override
@@ -288,13 +270,18 @@ public class ShaveListFragment extends Fragment
                 }
         }
 
-        @OnItemClick(R.id.shaveList)
-        void onItemClick(long id) {
+        @Override
+        public void onItemClick(long id) {
                 if (mActionMode.isPresent()) {
                         mActionMode.get().finish();
                 }
                 mClickedItem = (int) id;
                 new ItemClickTask().execute();
+        }
+
+        @Override
+        public int getRazorId() {
+                return mRazorId;
         }
 
         private void heroaction() {
@@ -554,45 +541,6 @@ public class ShaveListFragment extends Fragment
                 new SaveNew(lastDeletedPosition, getActivity().getContentResolver()).execute(lastDeleted);
         }
 
-        private void updateFloatingActionButton(int firstVisibleItem) {
-                // go up = vis, down = hidden
-                if (firstVisibleItem > mPreviousVisibleItem) {
-                        mFAB.setVisibility(View.INVISIBLE);
-                } else if (firstVisibleItem < mPreviousVisibleItem) {
-                        mFAB.setVisibility(View.VISIBLE);
-                }
-                mPreviousVisibleItem = firstVisibleItem;
-        }
-
-        /**
-         * Required for the OnScrollListener interface.
-         */
-        @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                updateFloatingActionButton(firstVisibleItem);
-                final float top = -mHeaderView.getTop();
-                float height = mHeaderView.getHeight();
-                if (top > height)
-                        return;
-                for (View textView : mColumnHeaders) {
-                        textView.setTranslationY(top / 2f);
-                }
-
-        }
-
-        @Override
-        public void onScrollStateChanged(AbsListView listView, int scrollState) {
-                int count = mListView.getCount();
-                if (scrollState == SCROLL_STATE_IDLE) {
-                        if (count > mListViewLastCount &&
-                                mListView.getLastVisiblePosition() >= (count - 1 - LIST_THRESHOLD)) {
-                                mCurrentPage++;
-                                getLoaderManager().restartLoader(0, null, this);
-                                mListViewLastCount = count;
-                                Timber.d("mCurrentPage = %d", mCurrentPage);
-                        }
-                }
-        }
 
         public void setPagerAdapter(FragmentStatePagerAdapter adapter) {
                 mPagerAdapter = adapter;
@@ -678,8 +626,8 @@ public class ShaveListFragment extends Fragment
         }
 
         @Override
-        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-                mAdapter.swapCursor(data);
+        public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+                mAdapter.changeCursor(cursor);
                 if (mMainActivity != null)
                         mMainActivity.stop();
         }
@@ -687,6 +635,6 @@ public class ShaveListFragment extends Fragment
         @Override
         public void onLoaderReset(Loader<Cursor> loader) {
                 // data is not available anymore, delete reference
-                mAdapter.swapCursor(null);
+                mAdapter.changeCursor(null);
         }
 }

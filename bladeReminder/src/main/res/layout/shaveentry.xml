@@ -6,6 +6,8 @@
     android:layout_height="wrap_content"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
+    android:id="@+id/linear_container"
+    android:background="?attr/selectableItemBackground"
     android:orientation="horizontal">
 
     <es.quirk.bladereminder.widgets.DateLabel

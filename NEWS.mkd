@@ -1,6 +1,10 @@
 <body class="@THEME@">
 
-### version 1.2
+### version 1.3.0
+* No more pauses when scrolling through the history
+* Fixed an error where the wrong razor could be shown on the modify screen
+
+### version 1.2.0
 * new feature: keep track of multiple razors!
 * update to the latest libraries
 * adjustments have been made to make for a more pleasant experience

@@ -216,6 +216,11 @@ public class DataSource {
 
 				countStr = Integer.toString(count);
 				cursor.moveToNext();
+				// avoid spitting out a razor name for count
+				if (count == 0) {
+					razorName = "";
+					countStr = "-";
+				}
 			}
 			outputData[0] = thisDay;
 			outputData[1] = countStr;
@@ -454,6 +459,41 @@ public class DataSource {
 			if (didOpen)
 				close();
 		}
+	}
+
+	/**
+	 * Given an ID, get the index in the table of this ID.
+	 */
+	public int getRazorPosition(int id) {
+		// since _ID is random, just the the 1st, 2nd, 3rd... from the list
+		int result = 0;
+		boolean didOpen = openIfNeeded();
+		try {
+			SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+			queryBuilder.setTables(Contract.Razors.TABLE_NAME);
+			String[] projection = { Contract.Razors._ID };
+			Cursor cursor = queryBuilder.query(mDatabase, projection, null,
+					null, null, null, null);
+			cursor.moveToFirst();
+			boolean found = false;
+			while (!cursor.isAfterLast()) {
+				int cursorId = cursor.getInt(0);
+				cursor.moveToNext();
+				if (cursorId == id) {
+					found = true;
+					break;
+				}
+				result++;
+			}
+			if (!found) {
+				result = 0;
+			}
+			cursor.close();
+		} finally {
+			if (didOpen)
+				close();
+		}
+		return result;
 	}
 
 	public int getRazorId(int position) {
